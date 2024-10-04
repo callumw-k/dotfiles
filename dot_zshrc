@@ -102,7 +102,8 @@ source $ZSH/oh-my-zsh.sh
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-export $EDITOR=nvim
+# export $EDITOR=nvim
+export PATH="/opt/homebrew/bin:$PATH"
 
 
 # Example aliases
@@ -134,22 +135,19 @@ alias lvdown="./vendor/bin/sail down"
 alias pat="php artisan"
 alias sail="./vendor/bin/sail"
 alias saila="./vendor/bin/sail artisan"
-PHPSTORM_JDK="/usr/lib/jvm/default"
+export PHPSTORM_JDK="/usr/lib/jvm/default"
 
 
 export ANDROID_HOME="$HOME/.config/android-sdk"
 export NDK_HOME="$HOME/.config/android-sdk/ndk/28.0.12433566"
 export JAVA_HOME="/opt/android-studio/jbr"
 
-# export PATH="$PATH:$HOME/fvm/default/bin"
-# export PATH="$PATH:$HOME/fvm/default/bin/dart"
-# export PATH="$PATH:$HOME/.config/flutter-sdk/bin"
-export PATH="$PATH":"/home/callum/fvm/default/bin"
+export PATH="$PATH":"$HOME/fvm/default/bin"
+export PATH="$PATH":"$HOME/.pub-cache/bin"
 
 export EDITOR='nvim'
 
 
-export PATH="$PATH":"$HOME/.pub-cache/bin"
 function dbch(){
     distrobox create --clone base-arch-container --name $1 --home /home/callum/distrobox-homes/$1 --init-hooks "chezmoi --init https://github.com/callumw-k/dotfiles && git clone https://github.com/callumw-k/neovim"
 }
@@ -160,32 +158,22 @@ function dcpush() {
 
 export DOTNET_ROOT="/usr/share/dotnet"
 export PATH=$PATH:$DOTNET_ROOT
-export PATH="$PATH:/home/callum/.dotnet/tools"
-# export PATH="$PATH:$HOME/.dotnet/tools/"
-
-# export QT_QPA_PLATFORM="wayland"
+export PATH="$PATH:$HOME/.dotnet/tools"
 
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 export PATH="$PATH":"$HOME/.local/bin"
 
 
-
-[[ -f /home/callum/.dart-cli-completion/zsh-config.zsh ]] && . /home/callum/.dart-cli-completion/zsh-config.zsh || true
-
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
 
+eval "$(pyenv init -)"
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/callum/.dart-cli-completion/zsh-config.zsh ]] && . /Users/callum/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
-
-# autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/bin/terraform terraform
-
-export PATH="$HOME/.spin/bin:$PATH"
