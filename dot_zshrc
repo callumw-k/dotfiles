@@ -59,7 +59,7 @@ setopt HIST_FIND_NO_DUPS
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -103,9 +103,8 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 # export $EDITOR=nvim
-if [[$(uname) == "Darwin"]]; then 
-  export PATH="/opt/homebrew/bin:$PATH"
-fi
+
+export EDITOR='nvim'
 
 
 # Example aliases
@@ -126,7 +125,6 @@ alias pnpx="pnpm dlx"
 alias fvf="fvm flutter"
 alias dvm="fvm dart"
 alias update-vms="sv /etc/libvirt/hooks/qemu"
-alias "dotnet ef"="/usr/share/dotnet/dotnet ef"
 alias ga="git add ."
 alias gm="git commit -m"
 alias gc="git checkout"
@@ -137,17 +135,25 @@ alias lvdown="./vendor/bin/sail down"
 alias pat="php artisan"
 alias sail="./vendor/bin/sail"
 alias saila="./vendor/bin/sail artisan"
+alias python="python3"
 export PHPSTORM_JDK="/usr/lib/jvm/default"
 
 
 export ANDROID_HOME="$HOME/.config/android-sdk"
 export NDK_HOME="$HOME/.config/android-sdk/ndk/28.0.12433566"
-# export JAVA_HOME="/opt/android-studio/jbr"
+
+
+if [[ "$(uname)" == "Darwin" ]]; then 
+  export JAVA_HOME=/Users/callum/Applications/Android\ Studio.app/Contents/jbr/Contents/Home
+fi
+
+if [[ "$(uname)" != "Darwin" ]]; then 
+  export JAVA_HOME="/opt/android-studio/jbr"
+fi
 
 export PATH="$PATH":"$HOME/fvm/default/bin"
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 
-export EDITOR='nvim'
 
 
 function dbch(){
@@ -158,8 +164,10 @@ function dcpush() {
   docker build -t $1 . && docker tag $1 callumw-k/$1 && docker push 'callumw-k/$1:latest'
 }
 
-export DOTNET_ROOT="/usr/share/dotnet"
-export PATH=$PATH:$DOTNET_ROOT
+if [[ "$(uname)" != "Darwin" ]]; then
+  export DOTNET_ROOT="/usr/share/dotnet"
+  export PATH="$PATH:$DOTNET_ROOT"
+fi
 export PATH="$PATH:$HOME/.dotnet/tools"
 
 export VOLTA_HOME="$HOME/.volta"
@@ -170,12 +178,16 @@ export PATH="$PATH":"$HOME/.local/bin"
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 
+
+
+if [[ "$(uname)" == "Darwin" ]]; then 
+  export PATH="$HOME/.cargo/bin:$PATH"
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
+
 eval "$(pyenv init -)"
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
 [[ -f /Users/callum/.dart-cli-completion/zsh-config.zsh ]] && . /Users/callum/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
 
