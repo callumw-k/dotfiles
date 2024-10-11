@@ -152,6 +152,7 @@ if [[ "$(uname)" != "Darwin" ]]; then
 fi
 
 export PATH="$PATH":"$HOME/fvm/default/bin"
+export PATH="$PATH":"$HOME/fvm/default/bin/dart"
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 
 
