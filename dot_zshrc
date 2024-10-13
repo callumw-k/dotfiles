@@ -130,15 +130,12 @@ alias gm="git commit -m"
 alias gc="git checkout"
 alias spu="sudo pacman -Syu"
 alias sp="sudo pacman -S"
-alias lvup="./vendor/bin/sail up"
-alias lvdown="./vendor/bin/sail down"
-alias pat="php artisan"
+alias artisan="php artisan"
 alias sail="./vendor/bin/sail"
-alias saila="./vendor/bin/sail artisan"
+alias sart="./vendor/bin/sail artisan"
 alias python="python3"
+
 export PHPSTORM_JDK="/usr/lib/jvm/default"
-
-
 export ANDROID_HOME="$HOME/.config/android-sdk"
 export NDK_HOME="$HOME/.config/android-sdk/ndk/28.0.12433566"
 
