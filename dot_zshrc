@@ -136,6 +136,10 @@ alias artisan="php artisan"
 alias sail="./vendor/bin/sail"
 alias sart="./vendor/bin/sail artisan"
 alias python="python3"
+alias set-user-owner='sudo chown -R $USER'
+alias set-user-perms='sudo chmod -R 775'
+alias dcupd='docker compose up --remove-orphans -d'
+alias dcpull='docker compose pull'
 
 export PHPSTORM_JDK="/usr/lib/jvm/default"
 export ANDROID_HOME="$HOME/.config/android-sdk"
