@@ -135,6 +135,7 @@ alias sp="sudo pacman -S"
 alias artisan="php artisan"
 alias sail="./vendor/bin/sail"
 alias sart="./vendor/bin/sail artisan"
+alias part="./vendor/bin/sail php artisan"
 alias python="python3"
 alias set-user-owner='sudo chown -R $USER'
 alias set-user-perms='sudo chmod -R 775'
