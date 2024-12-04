@@ -142,23 +142,17 @@ alias set-user-perms='sudo chmod -R 775'
 alias dcupd='docker compose up --remove-orphans -d'
 alias dcpull='docker compose pull'
 
-export PHPSTORM_JDK="/usr/lib/jvm/default"
+# export PHPSTORM_JDK="/usr/lib/jvm/default"
 export ANDROID_HOME="$HOME/.config/android-sdk"
-export NDK_HOME="$HOME/.config/android-sdk/ndk/28.0.12433566"
+# export NDK_HOME="$HOME/.config/android-sdk/ndk/28.0.12433566"
 
+export CHROME_EXECUTABLE=/usr/bin/brave
 
 if [[ "$(uname)" == "Darwin" ]]; then 
   export JAVA_HOME=/Users/callum/Applications/Android\ Studio.app/Contents/jbr/Contents/Home
 fi
 
-if [[ "$(uname)" != "Darwin" ]]; then 
-  export JAVA_HOME="/opt/android-studio/jbr"
-fi
-
 export PATH="$PATH":"$HOME/fvm/default/bin"
-export PATH="$PATH":"$HOME/fvm/default/bin/dart"
-export PATH="$PATH":"$HOME/.pub-cache/bin"
-
 
 
 function dbch(){
@@ -169,10 +163,10 @@ function dcpush() {
   docker build -t $1 . && docker tag $1 callumw-k/$1 && docker push 'callumw-k/$1:latest'
 }
 
-if [[ "$(uname)" != "Darwin" ]]; then
-  export DOTNET_ROOT="/usr/share/dotnet"
-  export PATH="$PATH:$DOTNET_ROOT"
-fi
+# if [[ "$(uname)" != "Darwin" ]]; then
+#   export DOTNET_ROOT="/usr/share/dotnet"
+#   export PATH="$PATH:$DOTNET_ROOT"
+# fi
 export PATH="$PATH:$HOME/.dotnet/tools"
 
 export VOLTA_HOME="$HOME/.volta"

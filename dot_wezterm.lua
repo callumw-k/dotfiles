@@ -10,9 +10,13 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-config.font = wezterm.font("Monaspace Neon", { weight = "Regular" })
+config.font = wezterm.font_with_fallback({
+	"Monaspace Neon",
+	"Symbols Nerd Font Mono",
+})
 config.font_size = 12
 config.line_height = 1.1
+config.window_close_confirmation = "NeverPrompt"
 
 config.default_prog = { "zellij" }
 
