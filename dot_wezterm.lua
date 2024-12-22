@@ -14,7 +14,7 @@ config.font = wezterm.font("Monaspace Neon", { weight = "Regular" })
 config.font_size = 12
 config.line_height = 1.1
 
-config.default_prog = { "zellij" }
+-- config.default_prog = { "zellij" }
 
 -- This is where you actually apply your config choices
 
