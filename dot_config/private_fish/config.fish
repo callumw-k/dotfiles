@@ -23,8 +23,9 @@ if status is-interactive
     alias gm="git commit -m"
     alias gc="git checkout"
     alias gcb="git checkout -b"
-    alias spu="sudo pacman -Syu"
-    alias sp="sudo pacman -S"
+    alias srmf="sudo rm -r"
+    alias syu="sudo pacman -Syu"
+    alias sy="sudo pacman -S"
     alias artisan="php artisan"
     alias sail="./vendor/bin/sail"
     alias sart="./vendor/bin/sail artisan"
@@ -58,7 +59,6 @@ if status is-interactive
           end
 
       case Linux
-        echo "Init linx"
       case '*'
         echo "Unknown term"
     end
@@ -103,10 +103,40 @@ if status is-interactive
     end
 
 
+    function init-git
+      if test (count $argv) -ne 1
+          echo "Usage: init-git <repository_name>"
+          return 1
+      end
+
+
+      set repo_name $argv[1]
+
+      set skip_init false
+
+      if test -d .git
+          echo "Git repository already exists. Skipping git init."
+          set skip_init true
+      end
+
+      if test $skip_init = false
+        git init
+      end
+
+      if git remote get-url origin ^/dev/null 2>/dev/null
+        echo "Remote 'origin' already exists. Skipping branch rename and push."
+        return 0
+      end
+
+      git branch -m main
+      git add -A
+      git commit -m "init"
+      git remote add origin git@git.callumserver.com:callumwk/$repo_name.git
+      git push -u origin main
+    end
 
     starship init fish | source
     zoxide init fish   | source
-    #    rbenv init - --no-rehash fish | source
 end
 
 
