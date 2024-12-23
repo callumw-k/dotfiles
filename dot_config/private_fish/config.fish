@@ -1,4 +1,7 @@
 if status is-interactive
+    set -gx EDITOR "nvim"
+    set -gx VISUAL "nvim"
+
     # Commands to run in interactive sessions can go here
     alias ezsh="chezmoi edit --apply ~/.zshrc && source ~/.zshrc"
     alias szsh="source ~/.zshrc"
