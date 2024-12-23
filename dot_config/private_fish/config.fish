@@ -35,6 +35,7 @@ if status is-interactive
     alias set-user-perms='sudo chmod -R 775'
     alias dcupd='docker compose up --remove-orphans -d'
     alias dcpull='docker compose pull'
+    alias f="yazi"
 
     set fish_greeting
 

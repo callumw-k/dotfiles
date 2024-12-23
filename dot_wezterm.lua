@@ -14,11 +14,12 @@ config.font = wezterm.font_with_fallback({
 	"Monaspace Neon",
 	"Symbols Nerd Font Mono",
 })
+
 config.font_size = 12
 config.line_height = 1.1
 config.window_close_confirmation = "NeverPrompt"
 
--- config.default_prog = { "zellij" }
+--config.default_prog = { "zellij" }
 
 -- This is where you actually apply your config choices
 
