@@ -18,6 +18,7 @@ if status is-interactive
     alias dbc="distrobox create --clone base-arch-container --name"
     alias db="distrobox"
     alias dbe="distrobox enter"
+    alias lg="lazygit"
     alias pnpx="pnpm dlx"
     alias fvf="fvm flutter"
     alias dvm="fvm dart"
