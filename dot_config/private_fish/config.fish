@@ -41,10 +41,13 @@ if status is-interactive
     alias dcpull='docker compose pull'
     alias f="yazi"
 
+
     set fish_greeting
 
     switch (uname)
       case Darwin
+          fish_add_path /opt/homebrew/bin
+
           if test -d $HOME/.dotnet
             set -x DOTNET_ROOT $HOME/.dotnet
             fish_add_path $DOTNET_ROOT
@@ -57,7 +60,6 @@ if status is-interactive
             fish_add_path $ORBSTACK_BIN
           end
 
-          fish_add_path /opt/homebrew/bin
 
           if test -d $HOME/.rbenv/shims
             fish_add_path $HOME/.rbenv/shims
@@ -108,40 +110,38 @@ if status is-interactive
     end
 
 
-    function init-git
-      if test (count $argv) -ne 1
-          echo "Usage: init-git <repository_name>"
-          return 1
-      end
-
-
-      set repo_name $argv[1]
-
-      set skip_init false
-
-      if test -d .git
-          echo "Git repository already exists. Skipping git init."
-          set skip_init true
-      end
-
-      if test $skip_init = false
-        git init
-      end
-
-      if git remote get-url origin ^/dev/null 2>/dev/null
-        echo "Remote 'origin' already exists. Skipping branch rename and push."
-        return 0
-      end
-
-      git branch -m main
-      git add -A
-      git commit -m "init"
-      git remote add origin git@git.callumserver.com:callumwk/$repo_name.git
-      git push -u origin main
-    end
-
     starship init fish | source
     zoxide init fish   | source
 end
 
+
+function init-git
+  if test (count $argv) -ne 1
+      echo "Usage: init-git <repository_name>"
+      return 1
+  end
+
+
+  set repo_name $argv[1]
+
+  set skip_init false
+
+  if test -d .git
+      echo "Git repository already exists. Skipping git init."
+      set skip_init true
+  end
+
+  set existing_origin (git remote get-url origin 2>/dev/null)
+
+  if test -n "$existing_origin"
+      echo "Remote 'origin' already exists. Skipping branch rename and push."
+      return 0
+  end
+
+  git branch -m main
+  git add -A
+  git commit -m "init"
+  git remote add origin git@git.callumserver.com:callumwk/$repo_name.git
+  git push -u origin main
+end
 
