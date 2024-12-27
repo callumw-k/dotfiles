@@ -15,6 +15,7 @@ if status is-interactive
     alias ce="chezmoi edit --apply"
     alias cadd="chezmoi add"
     alias ca="chezmoi apply"
+    alias ccd="chezmoi cd"
     alias dbc="distrobox create --clone base-arch-container --name"
     alias db="distrobox"
     alias dbe="distrobox enter"
