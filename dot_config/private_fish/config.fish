@@ -10,6 +10,7 @@ if status is-interactive
     alias vim="nvim"
     alias vi="nvim"
     alias sv="sudo -E nvim"
+    alias so="sudo"
     alias svim="sudo -E nvim"
     alias snvim="sudo -E nvim"
     alias ce="chezmoi edit --apply"
@@ -40,6 +41,7 @@ if status is-interactive
     alias set-user-perms='sudo chmod -R 775'
     alias dcupd='docker compose up --remove-orphans -d'
     alias dcpull='docker compose pull'
+    alias ls='ls -l -a'
     alias f="yazi"
 
 
