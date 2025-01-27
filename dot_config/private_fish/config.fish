@@ -43,6 +43,7 @@ if status is-interactive
     alias dcpull='docker compose pull'
     alias ls='ls -l -a'
     alias f="yazi"
+    alias yays="yay -S"
 
 
     set fish_greeting
