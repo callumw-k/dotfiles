@@ -41,7 +41,7 @@ if status is-interactive
     alias set-user-perms='sudo chmod -R 775'
     alias dcupd='docker compose up --remove-orphans -d'
     alias dcpull='docker compose pull'
-    alias ls='ls -l -a'
+    alias ls='exa -l -a'
     alias f="yazi"
     alias yays="yay -S"
 
@@ -120,32 +120,29 @@ end
 
 
 function init-git
-  if test (count $argv) -ne 1
-      echo "Usage: init-git <repository_name>"
-      return 1
-  end
+    if test (count $argv) -ne 1
+        echo "Usage: init-git <repository_name>"
+        return 1
+    end
+    set repo_name $argv[1]
+    
+    if test -d .git
+        echo "Git repository already exists. Skipping git init."
+    else
+        git init
+        echo "Initialized new git repository"
+    end
 
-
-  set repo_name $argv[1]
-
-  set skip_init false
-
-  if test -d .git
-      echo "Git repository already exists. Skipping git init."
-      set skip_init true
-  end
-
-  set existing_origin (git remote get-url origin 2>/dev/null)
-
-  if test -n "$existing_origin"
-      echo "Remote 'origin' already exists. Skipping branch rename and push."
-      return 0
-  end
-
-  git branch -m main
-  git add -A
-  git commit -m "init"
-  git remote add origin git@git.callumserver.com:callumwk/$repo_name.git
-  git push -u origin main
+    set existing_origin (git remote get-url origin 2>/dev/null)
+    if test -n "$existing_origin"
+        echo "Remote 'origin' already exists. Skipping branch rename and push."
+        return 0
+    end
+    
+    git branch -m main
+    git add -A
+    git commit -m "init"
+    git remote add origin git@git.callumserver.com:callumwk/$repo_name.git
+    git push -u origin main
 end
 
