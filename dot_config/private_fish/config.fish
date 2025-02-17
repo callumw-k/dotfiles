@@ -16,7 +16,6 @@ if status is-interactive
     alias ce="chezmoi edit --apply"
     alias cadd="chezmoi add"
     alias ca="chezmoi apply"
-    alias ccd="chezmoi cd"
     alias dbc="distrobox create --clone base-arch-container --name"
     alias db="distrobox"
     alias dbe="distrobox enter"
@@ -63,6 +62,12 @@ if status is-interactive
           if test -d $ORBSTACK_BIN
             fish_add_path $ORBSTACK_BIN
           end
+
+          set RUSTUP_ROOT "/opt/homebrew/opt/rustup/bin"
+          if test -d $RUSTUP_ROOT
+            fish_add_path $RUSTUP_ROOT
+          end
+
 
 
           if test -d $HOME/.rbenv/shims
