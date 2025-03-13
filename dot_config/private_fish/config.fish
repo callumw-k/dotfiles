@@ -3,7 +3,7 @@ if status is-interactive
     set -gx VISUAL "nvim"
 
     # Commands to run in interactive sessions can go here
-    alias ezsh="chezmoi edit --apply ~/.zshrc && source ~/.zshrc"
+    alias ezsh="cd ~/.local/share chezmoi && nvim && chezmoi apply"
     alias szsh="source ~/.zshrc"
     alias efish="nvim ~/.config/fish/config.fish"
     alias sfish="source ~/.config/fish/config.fish"
@@ -13,9 +13,10 @@ if status is-interactive
     alias so="sudo"
     alias svim="sudo -E nvim"
     alias snvim="sudo -E nvim"
-    alias ce="chezmoi edit --apply"
+    alias ce="cd ~/.local/share/chezmoi && nvim && chezmoi apply && cd - && sfish"
     alias cadd="chezmoi add"
     alias ca="chezmoi apply"
+    alias cdc="chezmoi cd"
     alias dbc="distrobox create --clone base-arch-container --name"
     alias db="distrobox"
     alias dbe="distrobox enter"
@@ -40,7 +41,6 @@ if status is-interactive
     alias set-user-perms='sudo chmod -R 775'
     alias dcupd='docker compose up --remove-orphans -d'
     alias dcpull='docker compose pull'
-    alias ls='exa -l -a'
     alias f="yazi"
     alias yays="yay -S"
 
@@ -52,7 +52,7 @@ if status is-interactive
           fish_add_path /opt/homebrew/bin
 
           if test -d $HOME/.dotnet
-            set -x DOTNET_ROOT $HOME/.dotnet
+            set -x DOTNET_ROOT /opt/homebrew/opt/dotnet/libexec
             fish_add_path $DOTNET_ROOT
           end
 
@@ -69,12 +69,14 @@ if status is-interactive
           end
 
 
-
           if test -d $HOME/.rbenv/shims
             fish_add_path $HOME/.rbenv/shims
           end
 
       case Linux
+          echo 'Is linux'
+          alias ls='exa -l -a'
+
       case '*'
         echo "Unknown term"
     end
@@ -119,9 +121,11 @@ if status is-interactive
     end
 
 
+    # tv init fish       | source
     starship init fish | source
     zoxide init fish   | source
 end
+
 
 
 function init-git
