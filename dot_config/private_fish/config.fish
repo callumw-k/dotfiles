@@ -2,7 +2,6 @@ if status is-interactive
     set -gx EDITOR "nvim"
     set -gx VISUAL "nvim"
 
-    # Commands to run in interactive sessions can go here
     alias ezsh="cd ~/.local/share chezmoi && nvim && chezmoi apply"
     alias szsh="source ~/.zshrc"
     alias efish="nvim ~/.config/fish/config.fish"
@@ -133,7 +132,6 @@ if status is-interactive
     end
 
 
-    # tv init fish       | source
     starship init fish | source
     zoxide init fish   | source
 end
