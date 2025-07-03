@@ -21,6 +21,7 @@ config.window_close_confirmation = "NeverPrompt"
 
 {{ if eq .chezmoi.os "darwin" -}}
   config.default_prog = { "/opt/homebrew/bin/zellij" }
+  config.font_size = 14
 {{ else -}}
   config.default_prog = { "zellij" }
 {{ end -}}

@@ -44,23 +44,30 @@ if status is-interactive
     alias dcpull='docker compose pull'
     alias f="yazi"
     alias yays="yay -S"
+    alias ls="ls -l -a"
 
 
     set fish_greeting
 
     switch (uname)
       case Darwin
+
           fish_add_path /opt/homebrew/bin
 
           if test -d $HOME/.dotnet
             set -x DOTNET_ROOT /opt/homebrew/opt/dotnet/libexec
             fish_add_path $DOTNET_ROOT
           end
+          
+          set JAVA_HOME "/opt/homebrew/opt/openjdk@21/bin"
+          if test -d $JAVA_HOME
+            fish_add_path $JAVA_HOME
+          end
 
 
-          set -x ORBSTACK_BIN $HOME/.orbstack/bin
-
+          set ORBSTACK_BIN "$HOME/.orbstack/bin"
           if test -d $ORBSTACK_BIN
+            set -x ORBSTACK_BIN $ORBSTACK_BIN 
             fish_add_path $ORBSTACK_BIN
           end
 
@@ -73,6 +80,7 @@ if status is-interactive
           if test -d $HOME/.rbenv/shims
             fish_add_path $HOME/.rbenv/shims
           end
+
 
       case Linux
           alias ls='exa -l -a'
@@ -99,6 +107,7 @@ if status is-interactive
       echo "android-sdk not installed"
     end
 
+
     if test -d $HOME/.spin/bin
       fish_add_path $HOME/.spin/bin
     end
@@ -120,6 +129,11 @@ if status is-interactive
     ## Flutter ##
     if test -d $HOME/fvm/default/bin
       fish_add_path $HOME/fvm/default/bin
+    end
+
+    set DART_PUB_PACKAGES "$HOME/.pub-cache/bin"
+    if test -d $DART_PUB_PACKAGES
+      fish_add_path $DART_PUB_PACKAGES
     end
 
     ## PyEnv ##

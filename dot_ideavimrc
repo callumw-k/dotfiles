@@ -40,8 +40,8 @@ nnoremap <leader>bd :bd!<cr>
 nnoremap <leader>bD :action CloseAllEditors<cr>
 nnoremap <leader>ca :action ShowIntentionActions<cr>
 nnoremap <leader>s :action GotoSymbol<cr>
-nnoremap ]d :action :action GotoNextError<cr>
-nnoremap [d :action :action GotoPreviousError<cr>
+nnoremap ]d :action GotoNextError<cr>
+nnoremap [d :action GotoPreviousError<cr>
 
 "" vnoremap <leader>d to start debug
 "map <leader>d <Action>(Debug)
