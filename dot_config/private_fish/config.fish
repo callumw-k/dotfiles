@@ -27,6 +27,7 @@ if status is-interactive
     alias ga="git add ."
     alias gm="git commit -m"
     alias gc="git checkout"
+    alias zj="zellij"
     alias gcb="git checkout -b"
     alias srmf="sudo rm -r"
     alias syu="sudo pacman -Syu"
@@ -55,7 +56,7 @@ if status is-interactive
           fish_add_path /opt/homebrew/bin
 
           if test -d $HOME/.dotnet
-            set -x DOTNET_ROOT /opt/homebrew/opt/dotnet/libexec
+            set -x DOTNET_ROOT /opt/homebrew/opt/dotnet
             fish_add_path $DOTNET_ROOT
           end
           
