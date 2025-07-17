@@ -12,7 +12,13 @@ config.font = wezterm.font_with_fallback({
 	"Symbols Nerd Font Mono",
 })
 
-config.enable_scroll_bar = false
+
+config.window_padding = {
+  left = 4,
+  right = 2,
+  top = 0,
+  bottom = 0,
+}
 
 config.window_close_confirmation = "NeverPrompt"
 

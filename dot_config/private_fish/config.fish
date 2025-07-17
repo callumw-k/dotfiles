@@ -56,7 +56,7 @@ if status is-interactive
           fish_add_path /opt/homebrew/bin
 
           if test -d $HOME/.dotnet
-            set -x DOTNET_ROOT /opt/homebrew/opt/dotnet
+            set -x DOTNET_ROOT /opt/homebrew/opt/dotnet/libexec
             fish_add_path $DOTNET_ROOT
           end
           

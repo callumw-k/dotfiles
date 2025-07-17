@@ -1,14 +1,15 @@
 # Sets user-defined palette
 palette = "catppuccin_macchiato"
 
+add_newline = true
+
 [character]
-# Note the use of Catppuccin color 'maroon'
-success_symbol = "[](maroon)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+success_symbol = '[➜](bold green)'
+error_symbol = "[➜](bold red)"
+vimcmd_symbol = "[<](green)"
 
 [directory]
-truncation_length = 4
+truncation_length = 2
 # Catppuccin 'lavender'
 style = "bold lavender"
 
