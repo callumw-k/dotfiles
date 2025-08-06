@@ -30,6 +30,7 @@ if status is-interactive
     alias zj="zellij"
     alias gcb="git checkout -b"
     alias srmf="sudo rm -r"
+    alias rmf="rm -r"
     alias syu="sudo pacman -Syu"
     alias sy="sudo pacman -S"
     alias artisan="php artisan"
@@ -45,7 +46,7 @@ if status is-interactive
     alias dcpull='docker compose pull'
     alias f="yazi"
     alias yays="yay -S"
-    alias ls="ls -l -a"
+    alias ls='eza -l -a'
 
 
     set fish_greeting
@@ -84,7 +85,6 @@ if status is-interactive
 
 
       case Linux
-          alias ls='exa -l -a'
 
           if test -z $ASDF_DATA_DIR
             set _asdf_shims "$HOME/.asdf/shims"
