@@ -153,6 +153,14 @@ end
 
 
 
+function z
+    if test (count $argv) -eq 0
+        zi
+    else
+        __zoxide_z $argv
+    end
+end
+
 function init-git
     if test (count $argv) -ne 1
         echo "Usage: init-git <repository_name>"
