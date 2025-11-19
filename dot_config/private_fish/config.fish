@@ -85,7 +85,7 @@ if status is-interactive
 
 
       case Linux
-
+          set -x QT_LOGGING_RULES "kwin_*.debug=true"
           if test -z $ASDF_DATA_DIR
             set _asdf_shims "$HOME/.asdf/shims"
           else
