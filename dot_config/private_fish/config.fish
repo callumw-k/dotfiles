@@ -26,7 +26,10 @@ if status is-interactive
     alias update-vms="sv /etc/libvirt/hooks/qemu"
     alias ga="git add ."
     alias gm="git commit -m"
+    alias gms="git commit -S -m"
     alias gc="git checkout"
+    alias gcs="git stash"
+    alias gcsp="git stash pop"
     alias zj="zellij"
     alias gcb="git checkout -b"
     alias srmf="sudo rm -r"
@@ -43,6 +46,7 @@ if status is-interactive
     alias dcupd='docker compose up --remove-orphans -d'
     alias dcdn='docker compose down'
     alias dc='docker'
+    alias dci='docker exec -i'
     alias dcpull='docker compose pull'
     alias f="yazi"
     alias yays="yay -S"
@@ -55,10 +59,16 @@ if status is-interactive
       case Darwin
 
           fish_add_path /opt/homebrew/bin
+          
 
           if test -d $HOME/.dotnet
             set -x DOTNET_ROOT /opt/homebrew/opt/dotnet/libexec
             fish_add_path $DOTNET_ROOT
+          end
+
+          set MYSQL_HOME "/opt/homebrew/opt/mysql-client/bin"
+          if test -d $MYSQL_HOME
+            fish_add_path $MYSQL_HOME
           end
           
           set JAVA_HOME "/opt/homebrew/opt/openjdk@21/bin"
@@ -104,8 +114,6 @@ if status is-interactive
     if test -d $HOME/.config/android-sdk
       set -x ANDROID_HOME $HOME/.config/android-sdk
       fish_add_path $ANDROID_HOME
-    else 
-      echo "android-sdk not installed"
     end
 
 
@@ -142,8 +150,11 @@ if status is-interactive
       set -x PYENV_ROOT $HOME/.pyenv
       fish_add_path $PYENV_ROOT/bin
       pyenv init - | source
-    else
-      echo "pyenv not installed"
+    end
+
+    if test -d $HOME/.phpenv
+      fish_add_path $HOME/.phpenv/bin
+      eval "$(phpenv init -)"
     end
 
 
@@ -159,6 +170,22 @@ function z
     else
         __zoxide_z $argv
     end
+end
+
+function dcib 
+  if test (count $argv) -eq 0
+    echo 'No container specified'
+  else 
+    docker exec -it $argv bash
+  end
+end
+
+function dcis 
+  if test (count $argv) -eq 0
+    echo 'No container specified'
+  else 
+    docker exec -it $argv sh
+  end
 end
 
 function init-git
@@ -188,3 +215,7 @@ function init-git
     git push -u origin main
 end
 
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :
