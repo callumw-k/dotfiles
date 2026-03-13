@@ -1,0 +1,1 @@
+GOW: mangohud gamescope --hdr-enabled --adaptive-sync -W 3840 -H 2160 -f -r 240 -- env WINEDLLOVERRIDES="version=n,b" %command%

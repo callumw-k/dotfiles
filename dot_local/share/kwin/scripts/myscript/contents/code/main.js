@@ -12,6 +12,8 @@ const EXCLUDED_CLASSES = [
   "obsidian",
   "thunderbird",
   "1password",
+  "brave-cinhimbnkkaeohfgghhklpknlkffjgod-default",
+  "brave-cinhimbnkkaeohfgghhklpknlkffjgod-Default",
 ];
 
 const PULL_TO_CURRENT_CLASSES = ["1password"];
