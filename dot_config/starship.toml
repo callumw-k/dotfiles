@@ -3,6 +3,8 @@ palette = "catppuccin_macchiato"
 
 add_newline = false
 
+command_timeout = 2000
+
 [character]
 success_symbol = '[➜](bold green)'
 error_symbol = "[➜](bold red)"
@@ -12,6 +14,9 @@ vimcmd_symbol = "[<](green)"
 truncation_length = 2
 # Catppuccin 'lavender'
 style = "bold lavender"
+
+[php]
+disabled = true
 
 [gcloud]
 disabled = true

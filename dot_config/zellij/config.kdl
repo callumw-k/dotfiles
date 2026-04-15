@@ -29,7 +29,8 @@ keybinds clear-defaults=true {
         bind "Alt l" { MoveFocusOrTab "right"; }
         bind "Alt n" { NewPane; }
         bind "Alt o" { MoveTab "right"; }
-        bind "Ctrl q" { Quit; }
+        // bind "Ctrl q" { Quit; }
+        bind "Ctrl q" { SwitchToMode "pane"; CloseFocus; SwitchToMode "normal"; }
         bind "Alt H" { SwitchToMode "tab"; GoToPreviousTab; SwitchToMode "normal"; }
         bind "Alt L" { SwitchToMode "tab"; GoToNextTab; SwitchToMode "normal"; }
         bind "Alt f" { SwitchToMode "pane"; ToggleFloatingPanes; SwitchToMode "normal"; }
