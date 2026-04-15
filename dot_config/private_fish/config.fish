@@ -25,8 +25,6 @@ if status is-interactive
     alias dvm="fvm dart"
     alias update-vms="sv /etc/libvirt/hooks/qemu"
     alias ga="git add ."
-    alias gm="git commit -m"
-    alias gms="git commit -S -m"
     alias gc="git checkout"
     alias gcs="git stash"
     alias gcsp="git stash pop"
@@ -158,6 +156,8 @@ if status is-interactive
     end
 
 
+
+    fzf --fish | source
     starship init fish | source
     zoxide init fish   | source
 end
@@ -186,6 +186,23 @@ function dcis
   else 
     docker exec -it $argv sh
   end
+end
+
+function gm
+    set signed_repos \
+        "git@github.com:caradvice/drive-grille.git"
+
+    set current_remote (git remote get-url origin 2>/dev/null)
+
+    echo 'Is this even working'
+
+    if contains -- $current_remote $signed_repos
+        echo 'Signing commit'
+        git commit -S -m $argv
+    else
+        echo 'Not signing commit'
+        git commit -m $argv
+    end
 end
 
 function init-git
