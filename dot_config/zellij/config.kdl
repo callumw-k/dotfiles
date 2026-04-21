@@ -29,13 +29,11 @@ keybinds clear-defaults=true {
         bind "Alt l" { MoveFocusOrTab "right"; }
         bind "Alt n" { NewPane; }
         bind "Alt o" { MoveTab "right"; }
-        // bind "Ctrl q" { Quit; }
         bind "Ctrl q" { SwitchToMode "pane"; CloseFocus; SwitchToMode "normal"; }
         bind "Alt H" { SwitchToMode "tab"; GoToPreviousTab; SwitchToMode "normal"; }
         bind "Alt L" { SwitchToMode "tab"; GoToNextTab; SwitchToMode "normal"; }
         bind "Alt f" { SwitchToMode "pane"; ToggleFloatingPanes; SwitchToMode "normal"; }
         bind "Alt m" { SwitchToMode "pane"; ToggleFocusFullscreen; SwitchToMode "normal"; }
-        bind "Alt q" { SwitchToMode "pane"; CloseFocus; SwitchToMode "normal"; }
         bind "Alt t" { SwitchToMode "tab"; NewTab; SwitchToMode "normal"; }
     }
     locked {
@@ -60,6 +58,7 @@ keybinds clear-defaults=true {
         bind "Ctrl p" { SwitchToMode "normal"; }
         bind "r" { NewPane "right"; SwitchToMode "normal"; }
         bind "w" { ToggleFloatingPanes; SwitchToMode "normal"; }
+        bind "x" { CloseFocus; SwitchToMode "normal"; }
         bind "z" { TogglePaneFrames; SwitchToMode "normal"; }
     }
     tab {
@@ -142,7 +141,6 @@ keybinds clear-defaults=true {
             }
             SwitchToMode "normal"
         }
-        // bind "Ctrl o" { SwitchToMode "normal"; }
         bind "p" {
             LaunchOrFocusPlugin "plugin-manager" {
                 floating true
@@ -150,6 +148,7 @@ keybinds clear-defaults=true {
             }
             SwitchToMode "normal"
         }
+        bind "d" { Detach; }
         bind "w" {
             LaunchOrFocusPlugin "zellij:session-manager" {
                 floating true
@@ -161,17 +160,11 @@ keybinds clear-defaults=true {
     shared_except "locked" "move" {
         bind "Ctrl m" { SwitchToMode "move"; }
     }
-    // shared_except "locked" "session" {
-    //     bind "Ctrl o" { SwitchToMode "session"; }
-    // }
-    shared_except "locked" "scroll" "search" "tmux" {
-        bind "Ctrl b" { SwitchToMode "tmux"; }
-    }
     shared_except "locked" "scroll" "search" {
         bind "Ctrl s" { SwitchToMode "scroll"; }
     }
     shared_except "locked" "tab" {
-        bind "Ctrl t" { SwitchToMode "tab"; }
+        bind "Ctrl Alt t" { SwitchToMode "tab"; }
     }
     shared_except "locked" "pane" {
         bind "Ctrl p" { SwitchToMode "pane"; }
@@ -190,9 +183,6 @@ keybinds clear-defaults=true {
     }
     shared_except "normal" "locked" "entersearch" "renametab" "renamepane" {
         bind "esc" { SwitchToMode "normal"; }
-    }
-    shared_among "pane" "tmux" {
-        bind "x" { CloseFocus; SwitchToMode "normal"; }
     }
     shared_among "scroll" "search" {
         bind "PageDown" { PageScrollDown; }
@@ -228,30 +218,7 @@ keybinds clear-defaults=true {
     renamepane {
         bind "esc" { UndoRenamePane; SwitchToMode "pane"; }
     }
-    shared_among "session" "tmux" {
-        bind "d" { Detach; }
-    }
-    tmux {
-        bind "left" { MoveFocus "left"; SwitchToMode "normal"; }
-        bind "down" { MoveFocus "down"; SwitchToMode "normal"; }
-        bind "up" { MoveFocus "up"; SwitchToMode "normal"; }
-        bind "right" { MoveFocus "right"; SwitchToMode "normal"; }
-        bind "space" { NextSwapLayout; }
-        bind "\"" { NewPane "down"; SwitchToMode "normal"; }
-        bind "%" { NewPane "right"; SwitchToMode "normal"; }
-        bind "," { SwitchToMode "renametab"; }
-        bind "[" { SwitchToMode "scroll"; }
-        bind "Ctrl b" { Write 2; SwitchToMode "normal"; }
-        bind "c" { NewTab; SwitchToMode "normal"; }
-        bind "h" { MoveFocus "left"; SwitchToMode "normal"; }
-        bind "j" { MoveFocus "down"; SwitchToMode "normal"; }
-        bind "k" { MoveFocus "up"; SwitchToMode "normal"; }
-        bind "l" { MoveFocus "right"; SwitchToMode "normal"; }
-        bind "n" { GoToNextTab; SwitchToMode "normal"; }
-        bind "o" { FocusNextPane; }
-        bind "p" { GoToPreviousTab; SwitchToMode "normal"; }
-        bind "z" { ToggleFocusFullscreen; SwitchToMode "normal"; }
-    }
+    // tmux mode removed; detach moved to session block directly
 }
 
 // Plugin aliases - can be used to change the implementation of Zellij
@@ -269,7 +236,7 @@ plugins {
     strider location="zellij:strider"
     tab-bar location="zellij:tab-bar"
     welcome-screen location="zellij:session-manager" {
-        welcome_screen true
+        welcome_screen false
     }
 }
 
