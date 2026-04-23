@@ -6,14 +6,17 @@
 #     # set ZELLIJ_AUTO_EXIT true
 #     eval (zellij setup --generate-auto-start fish | string collect)
 # end
-if not set -q ZELLIJ
-    if test "$ZELLIJ_AUTO_ATTACH" = "true"
-        zellij attach -c
-    else
-        zellij
-    end
 
-    if test "$ZELLIJ_AUTO_EXIT" = "true"
-        kill $fish_pid
-    end
+if test "$TERMINAL_EMULATOR" != "JetBrains-JediTerm"
+  if not set -q ZELLIJ
+      if test "$ZELLIJ_AUTO_ATTACH" = "true"
+          zellij attach -c
+      else
+          zellij
+      end
+
+      if test "$ZELLIJ_AUTO_EXIT" = "true"
+          kill $fish_pid
+      end
+  end
 end
