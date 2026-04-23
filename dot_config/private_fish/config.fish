@@ -94,7 +94,11 @@ if status is-interactive
 
 
       case Linux
+
+          set -gx PATH "$HOME/.local/bin" $PATH
           set -x QT_LOGGING_RULES "kwin_*.debug=true"
+          set --erase _asdf_shims
+
           if test -z $ASDF_DATA_DIR
             set _asdf_shims "$HOME/.asdf/shims"
           else
@@ -104,7 +108,7 @@ if status is-interactive
           if not contains $_asdf_shims $PATH
             set -gx --prepend PATH $_asdf_shims
           end
-          set --erase _asdf_shims
+
 
       case '*'
         echo "Unknown term"
