@@ -95,8 +95,7 @@ if status is-interactive
 
       case Linux
 
-          set -gx PATH "$HOME/.local/bin" $PATH
-          set -x QT_LOGGING_RULES "kwin_*.debug=true"
+          # set -x QT_LOGGING_RULES "kwin_*.debug=true"
           set --erase _asdf_shims
 
           if test -z $ASDF_DATA_DIR
