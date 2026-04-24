@@ -164,9 +164,8 @@ if status is-interactive
     fzf --fish | source
     starship init fish | source
     zoxide init fish   | source
-    # eval (zellij setup --generate-auto-start fish | string collect)
-    if not set -q ZELLIJ_PANE_ID
-        exec zellij attach --create
+    if [ "$TERM" = "xterm-ghostty" ]
+        eval (zellij setup --generate-auto-start fish | string collect)
     end
 end
 
