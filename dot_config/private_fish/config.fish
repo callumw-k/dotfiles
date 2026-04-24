@@ -95,7 +95,7 @@ if status is-interactive
 
       case Linux
 
-          # set -x QT_LOGGING_RULES "kwin_*.debug=true"
+          set -x QT_LOGGING_RULES "kwin_*.debug=true"
           set --erase _asdf_shims
 
           if test -z $ASDF_DATA_DIR
@@ -164,6 +164,7 @@ if status is-interactive
     fzf --fish | source
     starship init fish | source
     zoxide init fish   | source
+    eval (zellij setup --generate-auto-start fish | string collect)
 end
 
 
