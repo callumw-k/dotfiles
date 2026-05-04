@@ -100,6 +100,10 @@ if status is-interactive
 
       case Linux
 
+          if test -f $HOME/.local/bin/claude
+              fish_add_path $HOME/.local/bin
+          end
+
           set -x QT_LOGGING_RULES "kwin_*.debug=true"
           set --erase _asdf_shims
 
