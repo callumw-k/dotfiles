@@ -164,6 +164,7 @@ if status is-interactive
     fzf --fish | source
     starship init fish | source
     zoxide init fish   | source
+
     if [ "$TERM" = "xterm-ghostty" ]
         eval (zellij setup --generate-auto-start fish | string collect)
     end
