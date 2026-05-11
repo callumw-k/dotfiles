@@ -55,6 +55,8 @@ if status is-interactive
     alias yays="yay -S"
     alias ls='eza -l -a'
     alias vf='vim $(fzf)'
+    alias zu='z ..'
+    alias zp='z -'
 
 
     set fish_greeting
