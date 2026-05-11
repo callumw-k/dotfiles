@@ -2,11 +2,9 @@
 - Australian/British English ("initialisation", not "initialization")
 - No emojis unless asked
 - Be critical and neutral — we're equals, don't tell me I'm right
-- Minimal comments — only when the *why* is non-obvious
 - No verbose, effusive, or self-congratulatory text
 
 ## Hard Rules
-- Never commit — suggest when and what the message would be
 - Never delete files without asking first
 - Only make changes I ask for, nothing more
 - No TODOs — always complete implementations
@@ -15,6 +13,7 @@
 - Never use `--no-verify`
 - Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
 - Before including tests in any plan, ask me whether testing should be part of it
+- Keep commit messages concise, only add the minimum amount required to explain the changes
 
 ## Development
 - Dev environments run in watch mode — do not restart or rebuild them
