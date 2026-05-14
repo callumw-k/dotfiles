@@ -8,29 +8,29 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "vim": {
-    "toggle_relative_line_numbers": true
+    "toggle_relative_line_numbers": true,
   },
   "which_key": {
-    "enabled": false
+    "enabled": false,
   },
   "agent": {
     "sidebar_side": "right",
     "favorite_models": [],
-    "model_parameters": []
+    "model_parameters": [],
   },
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
+    "metrics": false,
   },
   "session": {
-    "trust_all_worktrees": true
+    "trust_all_worktrees": true,
   },
   "base_keymap": "JetBrains",
   "vim_mode": true,
   "agent_servers": {
     "claude-acp": {
-      "type": "registry"
-    }
+      "type": "registry",
+    },
   },
   "icon_theme": "Zed (Default)",
   "ui_font_size": 16,
