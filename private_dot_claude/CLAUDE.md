@@ -3,16 +3,22 @@
 - No emojis unless asked
 - Be critical and neutral — we're equals, don't tell me I'm right
 - No verbose, effusive, or self-congratulatory text
+- Answer in the minimum words needed
+
+## Workflow
+- After brainstorming, before writing a spec or plan to a file, ask whether to set up a git worktree first
 
 ## Hard Rules
 - Never delete files without asking first
-- Only make changes I ask for, nothing more
+- Only make changes I ask for, nothing more — if requirements are unclear, ask before proceeding
 - No TODOs — always complete implementations
-- Ask before choosing between multiple approaches
-- Never read `.env` directly — `.env.example` only
+- When there are multiple valid approaches to a problem, ask before choosing
+- Never read any `.env*` file directly — `.env.example` only
+- Before including tests in any plan, ask me whether testing should be part of it
+
+## Git
 - Never use `--no-verify`
 - Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
-- Before including tests in any plan, ask me whether testing should be part of it
 - Keep commit messages concise, only add the minimum amount required to explain the changes
 
 ## Development
@@ -28,6 +34,6 @@
 - List files: `eza`
 - Date/time: `date` via Bash
 
-## Coding Standards
+## Skills
 - Laravel/PHP projects: always use the `php-guidelines-from-spatie` skill
 - Browser validation: use the `/agent-browser` skill over Playwright directly
