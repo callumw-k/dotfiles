@@ -38,7 +38,3 @@
 - Find files: `fd`
 - List files: `eza`
 - Date/time: `date` via Bash
-
-## Skills
-- Laravel/PHP projects: always use the `php-guidelines-from-spatie` skill
-- Browser validation: use the `/agent-browser` skill over Playwright directly
