@@ -57,6 +57,7 @@ if status is-interactive
     alias vf='vim $(fzf)'
     alias zu='z ..'
     alias zp='z -'
+    alias typora="open -a typora"
 
 
     set fish_greeting
