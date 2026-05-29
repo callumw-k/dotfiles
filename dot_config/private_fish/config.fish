@@ -117,6 +117,10 @@ if status is-interactive
             set -gx --prepend PATH $_asdf_shims
           end
 
+          if test -f $HOME/.pub-cache/bin
+              fish_add_path $HOME/.pub-cache/bin
+          end
+
 
       case '*'
         echo "Unknown term"
