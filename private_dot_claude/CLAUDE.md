@@ -21,6 +21,10 @@
 - Ask before choosing only when approaches differ in a way that matters (architecture, data model, irreversible trade-offs). Don't ask about trivial style picks — just pick and move on.
 - Never assume code is correct; I'll verify.
 
+## Code
+- Don't add comments that restate what the code does. Comment only to explain *why* — non-obvious intent, trade-offs, workarounds, gotchas. When in doubt, leave it out.
+- Match the surrounding code's existing comment density; don't introduce a new commenting style.
+
 ## Workflow
 - After brainstorming, before writing a spec or plan to a file, ask whether to set up a git branch or worktree first
 - When presenting a spec or plan file for review, run `typora <file>` to open it
