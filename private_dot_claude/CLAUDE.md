@@ -41,5 +41,5 @@
 - Search: `rg` (ripgrep)
 - Read files: `bat`
 - Find files: `fd`
-- List files: `eza`
+- List files: `eza`. Trees: default `eza --tree --git-ignore --level=3`, then drill deeper into the specific subdir you need (`eza --tree --git-ignore --level=5 src/`). Reserve unlimited (`--tree` with no `--level`) for small repos.
 - Date/time: `date` via Bash
