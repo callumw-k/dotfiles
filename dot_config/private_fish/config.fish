@@ -176,6 +176,11 @@ if status is-interactive
     end
 
 
+    if set -q ZELLIJ
+      function zellij_rename_tab_pwd --on-event fish_prompt
+          zellij action rename-tab (basename (pwd))
+      end
+    end
 
     fzf --fish | source
     starship init fish | source
