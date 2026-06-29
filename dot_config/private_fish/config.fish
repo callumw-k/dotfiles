@@ -4,8 +4,9 @@ if status is-interactive
         eval (zellij setup --generate-auto-start fish | string collect)
     end
 
-    set -gx EDITOR "nvim"
-    set -gx VISUAL "nvim"
+    set -gx EDITOR nvim
+    set -gx VISUAL nvim
+    set -gx SUDO_EDITOR nvim
 
     alias ezsh="cd ~/.local/share chezmoi && nvim && chezmoi apply"
     alias szsh="source ~/.zshrc"
@@ -13,10 +14,8 @@ if status is-interactive
     alias sfish="source ~/.config/fish/config.fish"
     alias vim="nvim"
     alias vi="nvim"
-    alias sv="sudo -E nvim"
+    alias sv="sudoedit"
     alias so="sudo"
-    alias svim="sudo -E nvim"
-    alias snvim="sudo -E nvim"
     alias ce="cd ~/.local/share/chezmoi && nvim && chezmoi apply && cd - && sfish"
     alias cadd="chezmoi add"
     alias ca="chezmoi apply"
@@ -58,6 +57,7 @@ if status is-interactive
     alias zu='z ..'
     alias zp='z -'
     alias typora="open -a typora"
+    alias fcat='cat "$(fzf)"'
 
 
     set fish_greeting
