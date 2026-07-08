@@ -57,7 +57,8 @@ if status is-interactive
     alias zu='z ..'
     alias zp='z -'
     alias typora="open -a typora"
-    alias fcat='cat "$(fzf)"'
+    alias cl='CLAUDE_CONFIG_DIR=/Users/Callum.Kane/.fine-dan-you-win/.claude claude'
+    alias fcat='bat "$(fzf)"'
 
 
     set fish_greeting
@@ -198,7 +199,15 @@ function z
     end
 end
 
-function dcib 
+function clwf
+    set -l branch (git branch --format='%(refname:short)' | fzf)
+    if test -z "$branch"
+        return 1
+    end
+    CLAUDE_CONFIG_DIR=/Users/Callum.Kane/.fine-dan-you-win/.claude claude --worktree $branch
+end
+
+function dcib
   if test (count $argv) -eq 0
     echo 'No container specified'
   else 
