@@ -57,9 +57,3 @@
 - Use existing commands from `package.json`/`composer.json` — don't invent your own
 - Prefer `/agent-browser` skill over Playwright directly for browser validation
 - Use the `gh` tool for GitHub operations
-# >>> headroom:markitdown_office >>>
-## Reading Office documents (Headroom MarkItDown)
-The Read tool cannot open .docx, .doc, .pptx, .ppt, .xlsx, or .xls files.
-To read one, run `/Users/Callum.Kane/Library/Application Support/Headroom/headroom/bin/markitdown <path>` via Bash and use the Markdown it prints.
-(PDFs are handled automatically and need no special step.)
-# <<< headroom:markitdown_office <<<

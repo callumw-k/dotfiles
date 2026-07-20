@@ -60,6 +60,7 @@ if status is-interactive
     # alias cl='CLAUDE_CONFIG_DIR=/Users/Callum.Kane/.fine-dan-you-win/.claude claude'
     alias cl='claude'
     alias fcat='bat "$(fzf)"'
+    alias fim='vim "$(fzf)"'
 
 
     set fish_greeting
