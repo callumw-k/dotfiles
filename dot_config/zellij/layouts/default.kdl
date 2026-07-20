@@ -1,7 +1,3 @@
-// layout {
-//     pane
-// }
-
 layout {
     pane
     pane size=1 borderless=true {

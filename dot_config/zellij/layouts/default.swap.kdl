@@ -13,6 +13,51 @@ swap_tiled_layout name="stacked" {
   }
 }
 
+swap_tiled_layout name="vertical" {
+    // 2 columns, 1 pane each
+    ui max_panes=3 {
+        pane split_direction="vertical" {
+            pane
+            pane { children; }
+        }
+    }
+    // 2 columns, 2 panes each
+    ui max_panes=5 {
+        pane split_direction="vertical" {
+            pane { children; }
+            pane { pane; pane; }
+        }
+    }
+    // 2 columns, 3 panes each
+    ui max_panes=7 {
+        pane split_direction="vertical" {
+            pane { children; }
+            pane { pane; pane; pane; }
+        }
+    }
+    // 3 columns, 3 panes each
+    ui max_panes=10 {
+        pane split_direction="vertical" {
+            pane { children; }
+            pane { pane; pane; pane; }
+            pane { pane; pane; pane; }
+        }
+    }
+    // 3 columns, 4 panes each
+    ui max_panes=13 {
+        pane split_direction="vertical" {
+            pane { children; }
+            pane { pane; pane; pane; pane; }
+            pane { pane; pane; pane; pane; }
+        }
+    }
+    // catch-all: primary pane + stacked overflow
+    ui split_direction="vertical" {
+        pane
+        pane stacked=true { children; }
+    }
+}
+
 swap_tiled_layout name="vertical-stacked" {
     ui max_panes=2  split_direction="vertical" {
         pane
@@ -24,37 +69,31 @@ swap_tiled_layout name="vertical-stacked" {
     }
 }
 
-swap_tiled_layout name="vertical" {
-    ui max_panes=4 {
-        pane split_direction="vertical" {
-            pane
-            pane { children; }
-        }
-    }
-    ui max_panes=7 {
-        pane split_direction="vertical" {
-            pane { children; }
-            pane { pane; pane; pane; pane; }
-        }
-    }
-    ui max_panes=11 {
-        pane split_direction="vertical" {
-            pane { children; }
-            pane { pane; pane; pane; pane; }
-            pane { pane; pane; pane; pane; }
-        }
-    }
-}
 
 swap_tiled_layout name="horizontal" {
     ui max_panes=2 {
         pane
         pane
     }
+    // 2 rows, second row 2 panes
+    ui max_panes=4 {
+        pane {
+            pane split_direction="vertical" { children; }
+            pane split_direction="vertical" { pane; pane; }
+        }
+    }
     ui max_panes=7 {
         pane {
             pane split_direction="vertical" { children; }
             pane split_direction="vertical" { pane; pane; pane; pane; }
+        }
+    }
+    // 3 rows, second row 4 panes, third row 2 panes
+    ui max_panes=9 {
+        pane {
+            pane split_direction="vertical" { children; }
+            pane split_direction="vertical" { pane; pane; pane; pane; }
+            pane split_direction="vertical" { pane; pane; }
         }
     }
     ui max_panes=11 {
@@ -63,6 +102,22 @@ swap_tiled_layout name="horizontal" {
             pane split_direction="vertical" { pane; pane; pane; pane; }
             pane split_direction="vertical" { pane; pane; pane; pane; }
         }
+    }
+    // catch-all: primary pane + stacked overflow
+    ui split_direction="horizontal" {
+        pane
+        pane stacked=true { children; }
+    }
+}
+
+swap_tiled_layout name="horizontal-stacked" {
+    ui max_panes=2 split_direction="horizontal" {
+        pane
+        pane { children; }
+    }
+    ui split_direction="horizontal" {
+        pane
+        pane stacked=true { children; }
     }
 }
 
