@@ -4,8 +4,8 @@ current="$(cat)"
 
 echo "$current" | jq '. + {
   "permissions": {
-    "defaultMode": "auto",
-  }
+    "defaultMode": "auto"
+  },
   "tui": "fullscreen",
   "statusLine": {
     "command": "bash ~/.claude/statusline-command.sh",
