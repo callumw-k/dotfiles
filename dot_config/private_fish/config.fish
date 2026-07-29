@@ -1,7 +1,9 @@
 if status is-interactive
 
-    if [ "$TERM" = "xterm-ghostty" ] && [ "$TERM_PROGRAM" != "vscode" ]
-        eval (zellij setup --generate-auto-start fish | string collect)
+    if command -v zellij >/dev/null 2>&1
+        if [ "$TERM" = "xterm-ghostty" ] && [ "$TERM_PROGRAM" != "vscode" ]
+            eval (zellij setup --generate-auto-start fish | string collect)
+        end
     end
 
     set -gx EDITOR nvim
