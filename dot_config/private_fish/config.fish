@@ -61,6 +61,8 @@ if status is-interactive
     alias cl='claude'
     alias fcat='bat "$(fzf)"'
     alias fim='vim "$(fzf)"'
+    alias fz='z "$(fd --type d | fzf)"'
+
 
 
     set fish_greeting

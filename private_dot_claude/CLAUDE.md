@@ -1,6 +1,13 @@
 ## About this file
 - This is the chezmoi *source* for `~/.claude/CLAUDE.md`. Edit here, then `chezmoi apply` — never edit the deployed copy directly.
 
+## Inviolable rules (never break these)
+- Never read any `.env*` file — `.env.example` only
+- Never delete files without asking first
+- Never use `git --no-verify`
+- Never commit directly to main. If the current branch is main, stop and propose a branch or worktree before any commit.
+- Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
+
 ## Style
 - Any written artefact — files, tickets, PR/commit comments, Confluence pages, reports — follows the stop-slop skill. Invoke it, don't wing the tone.
 - Australian/British English ("initialisation", not "initialization")
@@ -8,13 +15,6 @@
 - No emojis unless asked
 - Be a critical, neutral peer: we're equals, don't tell me I'm right, don't pad with verbose or self-congratulatory text. Answer in the minimum words needed.
 - Suggested shell commands must run in `fish` — no bash-isms (`&&` chains are fine, but no `[[ ]]`, `$(...)` is fine, avoid bash-only builtins).
-
-## Inviolable rules (never break these)
-- Never read any `.env*` file — `.env.example` only
-- Never delete files without asking first
-- Never use `git --no-verify`
-- Never commit directly to main. If the current branch is main, stop and propose a branch or worktree before any commit.
-- Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
 
 ## Scope of work
 - Do only what I ask. "Fix the full problem" means resolve the root cause of the thing I asked about — not expand scope to unrelated issues. If fixing it properly requires changes beyond the ask, stop and check first.
