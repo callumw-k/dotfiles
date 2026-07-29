@@ -24,6 +24,29 @@ cost=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 session_id=$(echo "$input" | jq -r '.session_id // empty')
 now=$(date +%s)
 
+# The payload carries no terminal width and this script runs detached (no /dev/tty),
+# so read the size off the tty of the nearest ancestor that has one. Moshi attaches
+# at ~40 columns, where the full line truncates mid-meter.
+cols=""
+p=$PPID
+for _ in 1 2 3 4; do
+  t=$(ps -o tty= -p "$p" 2>/dev/null | tr -d ' ')
+  case "$t" in
+    pts/*|tty[0-9]*) cols=$(stty size < "/dev/$t" 2>/dev/null | cut -d' ' -f2); break ;;
+  esac
+  p=$(ps -o ppid= -p "$p" 2>/dev/null | tr -d ' ')
+  case "$p" in ''|0|1) break ;; esac
+done
+case "$cols" in ''|*[!0-9]*) cols=80 ;; esac
+
+if [ "$cols" -ge 90 ]; then
+  tier=full; bar_cells=10
+elif [ "$cols" -ge 60 ]; then
+  tier=mid; bar_cells=5
+else
+  tier=min; bar_cells=0
+fi
+
 # On-demand overage cost: once quota (5h or 7d) hits 100%, further API calls bill
 # at cost.total_cost_usd rates. That field is per-process and cumulative since
 # session start (resets on /clear), so each session records an overage baseline:
@@ -88,15 +111,15 @@ grad() {
 # Render "bar emoji pct%" for a usage percentage.
 meter() {
   local p="$1" filled i t rgb r g b pct_int
-  filled=$(awk -v p="$p" 'BEGIN{v=p/100*10; printf "%d", (v+0.5)}')
-  [ "$filled" -gt 10 ] && filled=10
+  filled=$(awk -v p="$p" -v n="$bar_cells" 'BEGIN{v=p/100*n; printf "%d", (v+0.5)}')
+  [ "$filled" -gt "$bar_cells" ] && filled=$bar_cells
   [ "$filled" -lt 0 ] && filled=0
   # Solid fill: whole bar takes the single gradient colour for its level, so the
   # bar colour reads as severity (matches the % beside it) rather than position.
   rgb=$(grad "$(awk -v p="$p" 'BEGIN{printf "%.4f", p/100}')")
   r=$(echo "$rgb" | cut -d' ' -f1); g=$(echo "$rgb" | cut -d' ' -f2); b=$(echo "$rgb" | cut -d' ' -f3)
   local out=""
-  for i in $(seq 0 9); do
+  for i in $(seq 0 $((bar_cells - 1))); do
     if [ "$i" -lt "$filled" ]; then
       out="${out}$(esc "$r" "$g" "$b")█"
     else
@@ -104,38 +127,42 @@ meter() {
     fi
   done
   pct_int=$(awk -v p="$p" 'BEGIN{printf "%d", p}')
-  printf '%s%s %s%d%%%s' "$out" "$reset" "$(esc "$r" "$g" "$b")" "$pct_int" "$reset"
+  [ -n "$out" ] && out="${out}${reset} "
+  printf '%s%s%d%%%s' "$out" "$(esc "$r" "$g" "$b")" "$pct_int" "$reset"
 }
 
 sep="${dim_gray} │ ${reset}"
 
 line="$(esc_bold 255 215 0)${repo_name}${reset}"
-if [ -n "$branch" ]; then
+if [ -n "$branch" ] && [ "$tier" != min ]; then
   line="${line}${sep}$(esc_bold 0 200 200)(${branch})${reset}"
 fi
-line="${line}${sep}$(esc 170 130 255)${model}${reset}"
-[ -n "$effort" ] && line="${line} ${dim_gray}${effort}${reset}"
+if [ "$tier" != min ]; then
+  line="${line}${sep}$(esc 170 130 255)${model}${reset}"
+  [ -n "$effort" ] && [ "$tier" = full ] && line="${line} ${dim_gray}${effort}${reset}"
+fi
+if [ "$tier" = full ]; then lbl_q="session quota"; lbl_c="context"; else lbl_q="5h"; lbl_c="ctx"; fi
 if [ -n "$five_pct" ]; then
-  line="${line}${sep}${dim_gray}session quota${reset} $(meter "$five_pct")"
-  if [ -n "$five_reset" ]; then
+  line="${line}${sep}${dim_gray}${lbl_q}${reset} $(meter "$five_pct")"
+  if [ -n "$five_reset" ] && [ "$tier" = full ]; then
     reset_str=$(awk -v r="$five_reset" -v now="$now" 'BEGIN{
       d=r-now; if (d<0) d=0;
       h=int(d/3600); m=int((d%3600)/60);
       if (h>0) printf "%dh%02dm", h, m; else printf "%dm", m;
     }')
     line="${line} ${dim_gray}↻ ${reset_str}${reset}"
-    # Quota exhausted -> on-demand spend now applies, so surface the cost.
-    if [ "$exceeded" = "1" ]; then
-      line="${line} ${dim_gray}→${reset} $(esc 255 140 0)$(awk -v c="$window_cost" 'BEGIN{printf "$%.2f", c}')${reset}"
-    fi
   fi
-  if [ -n "$seven_pct" ]; then
+  # Quota exhausted -> on-demand spend now applies, so surface the cost at every width.
+  if [ "$exceeded" = "1" ]; then
+    line="${line} ${dim_gray}→${reset} $(esc 255 140 0)$(awk -v c="$window_cost" 'BEGIN{printf "$%.2f", c}')${reset}"
+  fi
+  if [ -n "$seven_pct" ] && [ "$tier" = full ]; then
     s_int=$(awk -v p="$seven_pct" 'BEGIN{printf "%d", p}')
     s_rgb=$(grad "$(awk -v p="$seven_pct" 'BEGIN{printf "%.4f", p/100}')")
     sr=$(echo "$s_rgb" | cut -d' ' -f1); sg=$(echo "$s_rgb" | cut -d' ' -f2); sb=$(echo "$s_rgb" | cut -d' ' -f3)
     line="${line}${sep}${dim_gray}7d${reset} $(esc "$sr" "$sg" "$sb")${s_int}%${reset}"
   fi
 fi
-line="${line}${sep}${dim_gray}context${reset} $(meter "$ctx_pct")"
+line="${line}${sep}${dim_gray}${lbl_c}${reset} $(meter "$ctx_pct")"
 
 printf '%s' "$line"
