@@ -1,0 +1,16 @@
+#!/bin/sh
+current="$(cat)"
+[ -z "$current" ] && current='{}'
+
+echo "$current" | jq '. + {
+  "permissions": {
+    "defaultMode": "auto",
+  }
+  "tui": "fullscreen",
+  "statusLine": {
+    "command": "bash ~/.claude/statusline-command.sh",
+    "type": "command"
+  },
+  "skipAutoPermissionPrompt": true,
+  "skipWorkflowUsageWarning": true
+}'
