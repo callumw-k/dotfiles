@@ -134,7 +134,11 @@ meter() {
 sep="${dim_gray} │ ${reset}"
 
 line="$(esc_bold 255 215 0)${repo_name}${reset}"
-if [ -n "$branch" ] && [ "$tier" != min ]; then
+if [ -n "$branch" ]; then
+  # A long branch name would push the meters off the right edge, so cap it at a
+  # quarter of the terminal: 10 chars at moshi's ~40 cols, 30 at 120.
+  max_branch=$((cols / 4))
+  [ "${#branch}" -gt "$max_branch" ] && branch="${branch:0:$((max_branch - 1))}…"
   line="${line}${sep}$(esc_bold 0 200 200)(${branch})${reset}"
 fi
 if [ "$tier" != min ]; then
