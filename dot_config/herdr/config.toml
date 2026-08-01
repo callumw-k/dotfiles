@@ -1,0 +1,34 @@
+onboarding = false
+
+[terminal]
+new_cwd = "home"
+
+[keys]
+new_workspace = ["prefix+shift+n", "alt+w"]
+new_tab = ["prefix+c", "alt+t"]
+split_vertical = ["prefix+v", "alt+n"]
+
+focus_pane_left = ["prefix+h", "alt+h", "alt+left"]
+focus_pane_down = ["prefix+j", "alt+j", "alt+down"]
+focus_pane_up = ["prefix+k", "alt+k", "alt+up"]
+focus_pane_right = ["prefix+l", "alt+l", "alt+right"]
+
+previous_tab = ["prefix+p", "alt+shift+h"]
+next_tab = ["prefix+n", "alt+shift+l"]
+
+previous_workspace = ["super+alt+k", "super+alt+up"]
+next_workspace = ["super+alt+j", "super+alt+down"]
+
+close_pane = ["prefix+x", "ctrl+q"]
+zoom = ["prefix+z", "prefix+f", "alt+m"]
+split_horizontal = ["prefix+minus", "prefix+d"]
+workspace_picker = ["prefix+w", "alt+s"]
+
+resize_mode = ["prefix+r", "ctrl+n"]
+copy_mode = ["prefix+[", "ctrl+s"]
+
+[ui]
+agent_panel_sort = "priority"
+show_agent_labels_on_pane_borders = true
+prompt_new_tab_name = false
+hide_tab_bar_when_single_tab = true

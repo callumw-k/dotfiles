@@ -5,7 +5,7 @@
 - Never read any `.env*` file — `.env.example` only
 - Never delete files without asking first
 - Never use `git --no-verify`
-- Never commit directly to main. If the current branch is main, stop and propose a branch or worktree before any commit.
+- Never commit directly to main without asking first. If the current branch is main: for small, self-contained changes, ask if it's okay to commit directly to main; otherwise propose a branch or worktree.
 - Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
 
 ## Style
@@ -36,6 +36,7 @@
 - After brainstorming, before writing a spec or plan to a file, ask whether to set up a git branch or worktree first
 - When presenting a spec or plan file for review, run `typora <file>` to open it
 - Before including tests in any plan, ask whether testing should be part of it
+- When closing out a development branch (finishing-a-development-branch skill), include squash merge back to main as an option alongside merge, PR, and keep-as-is
 
 ## Git
 - Keep commit messages to one concise subject line (imperative mood, ≤72 chars). Add a body only when the *why* isn't obvious from the diff.

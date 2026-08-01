@@ -6,6 +6,15 @@ if status is-interactive
         end
     end
 
+    # # HERDR_ENV is set inside herdr panes, so this can't nest
+    # if test -x $HOME/.local/bin/herdr; and not set -q HERDR_ENV; and not set -q ZELLIJ; and [ "$TERM_PROGRAM" != "vscode" ]
+    #     # Attach to the running session, but land in a fresh workspace instead of
+    #     # mirroring whatever the last client focused. Fails silently when no
+    #     # server is up yet, and the plain attach below then starts one.
+    #     $HOME/.local/bin/herdr workspace create --focus --cwd $HOME >/dev/null 2>&1
+    #     $HOME/.local/bin/herdr
+    # end
+
     set -gx EDITOR nvim
     set -gx VISUAL nvim
     set -gx SUDO_EDITOR nvim
