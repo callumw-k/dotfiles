@@ -16,9 +16,6 @@ focus_pane_right = ["prefix+l", "alt+l", "alt+right"]
 previous_tab = ["prefix+p", "alt+shift+h"]
 next_tab = ["prefix+n", "alt+shift+l"]
 
-previous_workspace = ["super+alt+k", "super+alt+up"]
-next_workspace = ["super+alt+j", "super+alt+down"]
-
 close_pane = ["prefix+x", "ctrl+q"]
 zoom = ["prefix+z", "prefix+f", "alt+m"]
 split_horizontal = ["prefix+minus", "prefix+d"]
