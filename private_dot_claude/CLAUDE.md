@@ -10,6 +10,7 @@
 
 ## Style
 - Any written artefact — files, tickets, PR/commit comments, Confluence pages, reports — follows the stop-slop skill. Invoke it, don't wing the tone.
+- Exception: specs and plans written by the superpowers skills (brainstorming, writing-plans) skip stop-slop entirely. Keep those in the skill's own format.
 - Australian/British English ("initialisation", not "initialization")
 - Prefer plain punctuation: use commas, colons, and full stops. Avoid em dashes and semicolons.
 - No emojis unless asked
