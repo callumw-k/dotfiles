@@ -30,7 +30,7 @@ if status is-interactive
     alias ce="cd ~/.local/share/chezmoi && nvim && chezmoi apply && cd - && sfish"
     alias cadd="chezmoi add"
     alias ca="chezmoi apply"
-    alias cdc="chezmoi cd"
+    alias cdc="z chezmoi"
     alias dbc="distrobox create --clone base-arch-container --name"
     alias db="distrobox"
     alias dbe="distrobox enter"
