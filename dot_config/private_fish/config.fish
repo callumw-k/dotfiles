@@ -99,6 +99,7 @@ if status is-interactive
             fish_add_path $JAVA_HOME
           end
 
+          source "$HOME/.cargo/env.fish"
 
           set ORBSTACK_BIN "$HOME/.orbstack/bin"
           if test -d $ORBSTACK_BIN
