@@ -5,8 +5,8 @@ new_cwd = "follow"
 
 [keys]
 new_workspace = ["prefix+shift+n", "alt+w"]
-new_tab = ["prefix+c", "alt+t"]
-split_vertical = ["prefix+v", "alt+n"]
+new_tab = ["prefix+c", "alt+n"]
+split_vertical = ["prefix+v", "alt+v"]
 
 focus_pane_left = ["prefix+h", "alt+h", "alt+left"]
 focus_pane_down = ["prefix+j", "alt+j", "alt+down"]
@@ -26,6 +26,9 @@ workspace_picker = ["prefix+w", "alt+s"]
 
 resize_mode = ["prefix+r", "ctrl+n"]
 copy_mode = ["prefix+[", "ctrl+s"]
+toggle_float = "alt+f"
+cycle_float = "alt+]"
+
 
 [keys.indexed]
 agents = "alt"
@@ -48,3 +51,7 @@ prompt_new_tab_name = false
 hide_tab_bar_when_single_tab = true
 floating_pane_width = "80%"
 floating_pane_height = "80%"
+
+[theme]
+name = "terminal"
+auto_switch = false

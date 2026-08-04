@@ -9,3 +9,4 @@ claude plugin install ponytail@ponytail
 claude plugin install superpowers@superpowers-marketplace
 claude plugin install swift-lsp@claude-plugins-official
 claude plugin install frontend-design@claude-plugins-official
+claude plugins install mattpocock-skills
