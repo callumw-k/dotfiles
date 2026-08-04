@@ -93,7 +93,7 @@ if status is-interactive
           if test -d $MYSQL_HOME
             fish_add_path $MYSQL_HOME
           end
-          
+
           set JAVA_HOME "/opt/homebrew/opt/openjdk@21/bin"
           if test -d $JAVA_HOME
             fish_add_path $JAVA_HOME

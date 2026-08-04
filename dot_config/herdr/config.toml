@@ -1,7 +1,7 @@
 onboarding = false
 
 [terminal]
-new_cwd = "home"
+new_cwd = "follow"
 
 [keys]
 new_workspace = ["prefix+shift+n", "alt+w"]
@@ -16,6 +16,9 @@ focus_pane_right = ["prefix+l", "alt+l", "alt+right"]
 previous_tab = ["prefix+p", "alt+shift+h"]
 next_tab = ["prefix+n", "alt+shift+l"]
 
+previous_agent = ["prefix+shift+k", "alt+shift+k"]
+next_agent = ["prefix+shift+j", "alt+shift+j"]
+
 close_pane = ["prefix+x", "ctrl+q"]
 zoom = ["prefix+z", "prefix+f", "alt+m"]
 split_horizontal = ["prefix+minus", "prefix+d"]
@@ -23,6 +26,20 @@ workspace_picker = ["prefix+w", "alt+s"]
 
 resize_mode = ["prefix+r", "ctrl+n"]
 copy_mode = ["prefix+[", "ctrl+s"]
+
+[keys.indexed]
+agents = "alt"
+
+[[keys.command]]
+key = "alt+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"
+
+[[keys.command]]
+key = "alt+shift+f"
+type = "plugin_action"
+command = "sessionizer.open"
+description = "open project workspace"
 
 [ui]
 agent_panel_sort = "priority"

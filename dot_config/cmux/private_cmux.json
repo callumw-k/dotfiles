@@ -1,0 +1,33 @@
+{
+  "$schema" : "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion" : 1,
+  "workspaceGroups" : {
+    "byCwd" : {
+      "/Users/Callum.Kane/Documents/code/grille" : {
+        "color" : "#1565C0",
+        "icon" : "car.fill",
+        "newWorkspacePlacement" : "top"
+      }
+    }
+  },
+  "shortcuts" : {
+    "bindings" : {
+      "focusLeft" : "alt+h",
+      "focusDown" : "alt+j",
+      "focusUp" : "alt+k",
+      "focusRight" : "alt+l",
+      "prevSurface" : "alt+shift+h",
+      "nextSurface" : "alt+shift+l",
+      "moveSurfaceLeft" : "alt+i",
+      "moveSurfaceRight" : "alt+o",
+      "newSurface" : "alt+t",
+      "closeTab" : "ctrl+q",
+      "splitRight" : "alt+n",
+      "toggleSplitZoom" : "alt+m",
+      "goToWorkspace" : "alt+s",
+      "newTab" : "alt+w",
+      "toggleTerminalCopyMode" : "ctrl+s",
+      "toggleFileExplorer" : "alt+p"
+    }
+  }
+}
