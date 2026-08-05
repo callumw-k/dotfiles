@@ -33,7 +33,7 @@ Reference implementation: `uprise-budget-tracker/everything_app`, spec and plan 
 
 **Flavours.** A repo straight off the brick template has none. Step 1 adds `staging` and `production`, matching the reference. Skip it only if the app will never carry two installs side by side, in which case drop `--flavor` from every command below and read the APK at `build/app/outputs/flutter-apk/app-release.apk`.
 
-**Application ID.** The flavour suffix appends to whatever `applicationId` is already set. Check it reads the way you want before a keystore signs anything, because the ID is locked once you publish. A brick-scaffolded repo can carry a doubled name like `dev.calcode.paperlist.paperlist`.
+**Application ID.** The flavour suffix appends to whatever `applicationId` is already set. Check it reads the way you want before a keystore signs anything, because the ID is locked once you publish. A brick-scaffolded repo can carry a doubled name like `dev.calcode.paperlist.paperlist`. The keystore's certificate subject (step 5's `-genkey` prompts) is unrelated to `applicationId` — Android never checks it, so a mismatched or generic CN there is cosmetic, not a reason to regenerate.
 
 **Signing fallback.** Two options in `buildTypes`:
 
@@ -55,7 +55,15 @@ which fails the build loudly when the keystore is absent. Pick the strict form u
 
 Flavours are Android-only here. The Dart side reads its config from `--dart-define-from-file`, so no second `main_*.dart` entrypoint and no `dart-define` of a flavour name.
 
-In `android/app/build.gradle.kts`, inside the `android` block after `defaultConfig`:
+AGP 8+ disables `resValue` generation by default, and the flavours below fail Gradle sync with "contains custom resource values, but the feature is disabled" without this opt-in. In `android/app/build.gradle.kts`, inside the `android` block:
+
+```kotlin
+    buildFeatures {
+        resValues = true
+    }
+```
+
+Then, inside the `android` block after `defaultConfig`:
 
 ```kotlin
     flavorDimensions += "default"
@@ -94,7 +102,7 @@ In `android/app/src/main/AndroidManifest.xml`, swap the hardcoded label:
 
 Both flavours still declare the same auth callback scheme in the manifest, so a device carrying both shows a chooser when the OAuth redirect fires. The reference app lives with it. Splitting the scheme means a per-flavour manifest and matching redirect URIs in both vault items.
 
-From here every `flutter run` and `flutter build` needs `--flavor staging` or `--flavor production`. Without one, Gradle fails with no default variant. Update `CLAUDE.md` so nobody rediscovers that.
+From here every `flutter run` and `flutter build` needs `--flavor staging` or `--flavor production`. Without one, Gradle fails with no default variant. Update `CLAUDE.md` so nobody rediscovers that — create the file if the repo doesn't have one yet.
 
 Verify:
 
