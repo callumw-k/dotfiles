@@ -47,17 +47,20 @@ else
   tier=min; bar_cells=0
 fi
 
-# On-demand overage cost: once quota (5h or 7d) hits 100%, further API calls bill
+# On-demand overage cost: once quota (5h or 7d) is exhausted, further API calls bill
 # at cost.total_cost_usd rates. That field is per-process and cumulative since
 # session start (resets on /clear), so each session records an overage baseline:
 # the cumulative cost seen at the render where it first observes quota exceeded for
 # the current window (keyed by five_reset). window_cost sums (cost - overage_baseline)
-# per session that has exceeded, so only spend incurred after crossing 100% counts —
+# per session that has exceeded, so only spend incurred after crossing exhaustion counts —
 # not pre-overage usage, not the whole window.
+# The rate_limits header caps at 99% and never reports 100 even once genuinely
+# exhausted (verified: stuck at 99% for 20+ minutes of continued spend while the
+# web admin console showed 100%), so 99 is treated as the exhaustion point, not 100.
 # Once the 5h reset time has passed, treat the session quota as reset even if a stale
-# used_percentage still reads 100 (rate limits only refresh on the next API response).
+# used_percentage still reads 99 (rate limits only refresh on the next API response).
 exceeded=$(awk -v a="${five_pct:-0}" -v b="${seven_pct:-0}" -v r="${five_reset:-0}" -v now="$now" \
-  'BEGIN{print ((a>=100||b>=100) && (r==0 || now<r)) ? 1 : 0}')
+  'BEGIN{print ((a>=99||b>=99) && (r==0 || now<r)) ? 1 : 0}')
 window_cost=0
 if [ -n "$session_id" ] && [ -n "$five_reset" ]; then
   sc_dir="$HOME/.claude/metrics/session-cost"
@@ -65,11 +68,17 @@ if [ -n "$session_id" ] && [ -n "$five_reset" ]; then
   sc_file="$sc_dir/${session_id}.json"
   overage_baseline=$(jq -r --argjson fr "$five_reset" \
     'if .five_reset == $fr and .overage_baseline != null then .overage_baseline else empty end' "$sc_file" 2>/dev/null)
+  # cost resets to 0 on /clear but the account can still be over quota, so a baseline
+  # higher than the current cost means this session cleared mid-window: re-baseline to
+  # 0 so the (now small) cost counts in full instead of going negative in the sum below.
+  if [ -n "$overage_baseline" ] && awk -v c="$cost" -v b="$overage_baseline" 'BEGIN{exit !(c<b)}'; then
+    overage_baseline=0
+  fi
   [ "$exceeded" = "1" ] && [ -z "$overage_baseline" ] && overage_baseline=$cost
   ob_json="null"; [ -n "$overage_baseline" ] && ob_json=$overage_baseline
   printf '{"five_reset":%s,"overage_baseline":%s,"cost":%s,"ts":%d}' "$five_reset" "$ob_json" "$cost" "$now" > "$sc_file"
   window_cost=$(jq -s --argjson fr "$five_reset" \
-    '[.[]|select(.five_reset==$fr and .overage_baseline!=null)|(.cost-.overage_baseline)]|add // 0' "$sc_dir"/*.json 2>/dev/null || echo 0)
+    '[.[]|select(.five_reset==$fr and .overage_baseline!=null)|([(.cost-.overage_baseline),0]|max)]|add // 0' "$sc_dir"/*.json 2>/dev/null || echo 0)
 
   # Dead sessions' files are never removed otherwise. Sweep files untouched for 2+ days
   # (well past any 5h/7d window), gated to once a day so this doesn't hit the filesystem
@@ -143,12 +152,12 @@ if [ -n "$branch" ]; then
 fi
 if [ "$tier" != min ]; then
   line="${line}${sep}$(esc 170 130 255)${model}${reset}"
-  [ -n "$effort" ] && [ "$tier" = full ] && line="${line} ${dim_gray}${effort}${reset}"
+  [ -n "$effort" ] && [ "$tier" != min ] && line="${line} ${dim_gray}${effort}${reset}"
 fi
 if [ "$tier" = full ]; then lbl_q="session quota"; lbl_c="context"; else lbl_q="5h"; lbl_c="ctx"; fi
 if [ -n "$five_pct" ]; then
   line="${line}${sep}${dim_gray}${lbl_q}${reset} $(meter "$five_pct")"
-  if [ -n "$five_reset" ] && [ "$tier" = full ]; then
+  if [ -n "$five_reset" ] && [ "$tier" != min ]; then
     reset_str=$(awk -v r="$five_reset" -v now="$now" 'BEGIN{
       d=r-now; if (d<0) d=0;
       h=int(d/3600); m=int((d%3600)/60);
@@ -160,7 +169,7 @@ if [ -n "$five_pct" ]; then
   if [ "$exceeded" = "1" ]; then
     line="${line} ${dim_gray}→${reset} $(esc 255 140 0)$(awk -v c="$window_cost" 'BEGIN{printf "$%.2f", c}')${reset}"
   fi
-  if [ -n "$seven_pct" ] && [ "$tier" = full ]; then
+  if [ -n "$seven_pct" ] && [ "$tier" != min ]; then
     s_int=$(awk -v p="$seven_pct" 'BEGIN{printf "%d", p}')
     s_rgb=$(grad "$(awk -v p="$seven_pct" 'BEGIN{printf "%.4f", p/100}')")
     sr=$(echo "$s_rgb" | cut -d' ' -f1); sg=$(echo "$s_rgb" | cut -d' ' -f2); sb=$(echo "$s_rgb" | cut -d' ' -f3)

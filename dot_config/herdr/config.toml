@@ -8,10 +8,16 @@ new_workspace = ["prefix+shift+n", "alt+w"]
 new_tab = ["prefix+c", "alt+t"]
 new_pane = ["prefix+enter", "alt+n"]
 
-focus_pane_left = ["prefix+h", "alt+h", "alt+left"]
-focus_pane_down = ["prefix+j", "alt+j", "alt+down"]
-focus_pane_up = ["prefix+k", "alt+k", "alt+up"]
-focus_pane_right = ["prefix+l", "alt+l", "alt+right"]
+arrangement_next = ["prefix+]", "alt+]"]
+arrangement_previous = ["prefix+[", "alt+["]
+
+next_workspace = ["prefix+shift+]", "alt+shift+]"]
+previous_workspace = ["prefix+shift+[", "alt+shift+["]
+
+focus_pane_left = ["prefix+h", "alt+h"]
+focus_pane_down = ["prefix+j", "alt+j"]
+focus_pane_up = ["prefix+k", "alt+k"]
+focus_pane_right = ["prefix+l", "alt+l"]
 
 previous_tab = ["prefix+p", "alt+shift+h"]
 next_tab = ["prefix+n", "alt+shift+l"]
@@ -25,7 +31,6 @@ split_horizontal = ["prefix+minus", "prefix+d"]
 workspace_picker = ["prefix+w", "alt+s"]
 
 resize_mode = ["prefix+r", "ctrl+n"]
-copy_mode = ["prefix+[", "ctrl+s"]
 toggle_float = "alt+f"
 
 
