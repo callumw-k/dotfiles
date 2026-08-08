@@ -26,7 +26,7 @@ previous_agent = ["prefix+shift+k", "alt+shift+k"]
 next_agent = ["prefix+shift+j", "alt+shift+j"]
 
 close_pane = ["prefix+x", "ctrl+q"]
-zoom = ["prefix+z", "prefix+f", "alt+m"]
+zoom = ["prefix+z", "alt+m"]
 split_horizontal = ["prefix+minus", "prefix+d"]
 workspace_picker = ["prefix+w", "alt+s"]
 
