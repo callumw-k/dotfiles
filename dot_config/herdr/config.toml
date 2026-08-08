@@ -49,7 +49,7 @@ command = "sessionizer.open"
 description = "open project workspace"
 
 [ui]
-agent_panel_sort = "priority"
+agent_panel_sort = "grouped"
 show_agent_labels_on_pane_borders = true
 prompt_new_tab_name = false
 hide_tab_bar_when_single_tab = true
