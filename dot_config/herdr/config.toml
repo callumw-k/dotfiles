@@ -32,7 +32,7 @@ workspace_picker = ["prefix+w", "alt+s"]
 
 resize_mode = ["prefix+r", "ctrl+n"]
 toggle_float = "alt+f"
-goto = ["prefix+g", "alt+shift+f"]
+goto = ["prefix+g", "alt+shift+p"]
 
 
 [keys.indexed]
