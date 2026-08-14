@@ -34,14 +34,18 @@ resize_mode = ["prefix+r", "ctrl+n"]
 toggle_float = "alt+f"
 goto = ["prefix+g", "alt+shift+p"]
 
+rename_tab = ["prefix+shift+t", "alt+shift+r"]
+rename_pane = ["prefix+shift+p", "alt+r"]
+
+
 
 [keys.indexed]
 agents = "alt"
 
-[[keys.command]]
-key = "alt+r"
-type = "plugin_action"
-command = "persiyanov.reviewr.toggle"
+# [[keys.command]]
+# key = "alt+r"
+# type = "plugin_action"
+# command = "persiyanov.reviewr.toggle"
 
 # [[keys.command]]
 # key = "alt+shift+f"

@@ -1,42 +1,49 @@
 ## About this file
-- This is the chezmoi *source* for `~/.claude/CLAUDE.md`. Edit here, then `chezmoi apply` — never edit the deployed copy directly.
+- The whole of `~/.claude` is chezmoi-managed output, including this file, `settings.json`, and `skills/`. Edit the source at `~/.local/share/chezmoi/private_dot_claude/`, then `chezmoi apply`.
 
-## Inviolable rules (never break these)
-- Never read any `.env*` file — `.env.example` only
+## Inviolable rules
+- Never read any `.env*` file. `.env.example` only.
 - Never delete files without asking first
 - Never use `git --no-verify`
-- Never commit directly to main without asking first. If the current branch is main: for small, self-contained changes, ask if it's okay to commit directly to main; otherwise propose a branch or worktree.
+- Never commit directly to main without asking. If the current branch is main, propose a branch or worktree, or ask whether a small self-contained change can go direct.
 - Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
 
 ## Style
-- Any written artefact — files, tickets, PR/commit comments, Confluence pages, reports — follows the stop-slop skill. Invoke it, don't wing the tone.
+- Anything persisted or sent on (files, tickets, PR/commit comments, Confluence pages, reports) follows the stop-slop skill. Invoke it, don't wing the tone. Chat replies to me are covered by the peer rule below instead.
 - Exception: specs and plans written by the superpowers skills (brainstorming, writing-plans) skip stop-slop entirely. Keep those in the skill's own format.
 - Australian/British English ("initialisation", not "initialization")
-- Prefer plain punctuation: use commas, colons, and full stops. Avoid em dashes and semicolons.
+- Prefer plain punctuation: commas, colons, and full stops. Avoid em dashes and semicolons.
 - No emojis unless asked
-- Be a critical, neutral peer: we're equals, don't tell me I'm right, don't pad with verbose or self-congratulatory text. Answer in the minimum words needed.
-- Suggested shell commands must run in `fish` — no bash-isms (`&&` chains are fine, but no `[[ ]]`, `$(...)` is fine, avoid bash-only builtins).
+- Be a critical, neutral peer: we're equals, don't tell me I'm right, don't pad with verbose or self-congratulatory text. Answer in the minimum words the question needs: no padding, and no truncating analysis I asked for.
+- Suggested shell commands must run in `fish`: no bash-isms (`&&` chains are fine, `$(...)` is fine, avoid `[[ ]]` and bash-only builtins).
 
 ## Scope of work
-- Do only what I ask. "Fix the full problem" means resolve the root cause of the thing I asked about — not expand scope to unrelated issues. If fixing it properly requires changes beyond the ask, stop and check first.
-- No TODOs, no stubs, no handwaving — complete the implementation or tell me you can't.
-- Minimum code that solves the problem: nothing speculative, no abstractions for single-use code, no unrequested flexibility/configurability, no error handling for impossible scenarios.
-- If requirements are unclear or multiple interpretations exist, say so and ask — don't pick silently.
-- If a simpler approach exists, say so; push back when warranted.
-- Ask before choosing only when approaches differ in a way that matters (architecture, data model, irreversible trade-offs). Don't ask about trivial style picks — just pick and move on.
-- Never assume code is correct; I'll verify.
-- When editing existing code: don't "improve" adjacent code, comments, or formatting; don't refactor things that aren't broken; match existing style; mention unrelated dead code rather than deleting it.
-- Remove only the imports/variables/functions your own change made unused — don't remove pre-existing dead code unless asked.
+- Complete the implementation or tell me you can't: no TODOs, no stubs, no handwaving.
+- Ask before choosing only when approaches differ in a way that matters (architecture, data model, irreversible trade-offs) and no approved plan covers the choice. Don't ask about trivial style picks, just pick and move on.
+- When editing existing code, match the existing style, leave adjacent code, comments, and formatting alone, and mention unrelated dead code rather than deleting it.
+- Remove only the imports, variables, and functions your own change made unused. Leave pre-existing dead code unless asked.
 - If stuck after 3 attempts: stop, document what you tried and why it failed, then ask before a fourth attempt.
 
 ## Code
-- Don't add comments that restate what the code does. Comment only to explain *why* — non-obvious intent, trade-offs, workarounds, gotchas. When in doubt, leave it out.
-- Match the surrounding code's existing comment density; don't introduce a new commenting style.
+- Don't add comments that restate what the code does. Comment only to explain *why*: non-obvious intent, trade-offs, workarounds, gotchas. When in doubt, leave it out.
+- Match the surrounding code's existing comment density.
+
+## Testing
+- Write a test only when you can name the bug it would catch: branches, edge cases, error paths, money, auth, parsers, state transitions.
+- Skip plumbing tests: framework behaviour, a getter returning what was set, a button rendering, a mock being called.
+- This bound applies to the TDD skill too. Red-green on logic worth testing, not on plumbing.
+
+## Approved plans
+- Approval is explicit: I say go on a written spec or plan, or accept one in plan mode. A "sounds good" mid-discussion isn't approval.
+- Once approved, it governs. Implement it end to end without checking in.
+- After approval, stop only for: a blocker you can't resolve, two steps that contradict each other, or a discovery that invalidates a later task. Everything else is yours to decide.
+- Raise plan concerns once, before task 1, as one batched message.
+- Record the calls you made when you finish. Mid-run "should I continue?" and progress summaries are noise.
+- Executing a plan with independent tasks: use subagent-driven-development over executing-plans.
 
 ## Workflow
 - After brainstorming, before writing a spec or plan to a file, ask whether to set up a git branch or worktree first
 - When presenting a spec or plan file for review, run `typora <file>` to open it
-- Before including tests in any plan, ask whether testing should be part of it
 - When closing out a development branch (finishing-a-development-branch skill), include squash merge back to main as an option alongside merge, PR, and keep-as-is
 
 ## Git
@@ -44,18 +51,11 @@
 
 ## Notes vault
 - My Obsidian vault (PARA-structured) is at `/Users/Callum.Kane/Documents/notes/vault`.
-- Project/initiative notes live under `01 Projects/<Initiative>/`; `_vault-index.md` is a flat file listing.
+- Project/initiative notes live under `01 Projects/<Initiative>/`, and `_vault-index.md` is a flat file listing.
 - When I flag that work relates to a specific initiative, look there for context before asking me. Match on the initiative, not the repo name.
 
-## Memory
-- Persist only non-obvious, durable facts: my preferences, project constraints, decisions and their rationale. Don't save things derivable from the code, git history, or this file.
-
 ## Tooling
-- Search: `rg` (ripgrep)
-- Read files: `bat`
-- Find files: `fd`
+- Shell tooling when a dedicated tool doesn't fit: `rg` (search), `fd` (find).
 - List files: `eza`. Trees: default `eza --tree --git-ignore --level=3`, then drill deeper into the specific subdir you need (`eza --tree --git-ignore --level=5 src/`). Reserve unlimited (`--tree` with no `--level`) for small repos.
-- Date/time: `date` via Bash
-- Use existing commands from `package.json`/`composer.json` — don't invent your own
-- Prefer `/agent-browser` skill over Playwright directly for browser validation
-- Use the `gh` tool for GitHub operations
+- Use existing commands from `package.json` and `composer.json` rather than inventing your own.
+- Prefer the `claude-in-chrome` skill over Playwright for browser validation.
