@@ -49,7 +49,7 @@ if status is-interactive
     alias zp='z -'
     alias typora="open -a typora"
     alias cl='claude'
-    alias fcat='bat "$(fzf)"'
+    alias fcat='cat "$(fzf)"'
     alias fim='vim "$(fzf)"'
     alias fz='z "$(fd --type d | fzf)"'
 end
