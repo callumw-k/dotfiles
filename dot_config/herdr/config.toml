@@ -61,6 +61,22 @@ hide_tab_bar_when_single_tab = true
 floating_pane_width = "90%"
 floating_pane_height = "90%"
 
+
 [theme]
 name = "terminal"
 auto_switch = false
+
+[[repos]]
+path = "~/Documents/code/grille"
+
+[[repos]]
+path = "~/Documents/code/apig"
+
+[[repos]]
+path = "~/Documents/notes/vault"
+
+[[repos]]
+path = "~/Documents/code/drive-alternator"
+
+[[repos]]
+path = "/Users/Callum.Kane/.local/share/chezmoi"

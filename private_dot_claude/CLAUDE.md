@@ -9,8 +9,8 @@
 - Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
 
 ## Style
-- Anything persisted or sent on (files, tickets, PR/commit comments, Confluence pages, reports) follows the stop-slop skill. Invoke it, don't wing the tone. Chat replies to me are covered by the peer rule below instead.
-- Exception: specs and plans written by the superpowers skills (brainstorming, writing-plans) skip stop-slop entirely. Keep those in the skill's own format.
+- Any written artefact — files, tickets, PR/commit comments, Confluence pages, reports — gets two passes: `humanizer` for sentence-level AI tells, then `callum-stop-slop` for document-level repetition. Invoke both, don't wing the tone. Skip humanizer where the text has already had a line-level pass, since running it twice causes over-compression.
+- Exception: specs and plans written by the superpowers skills (brainstorming, writing-plans) skip both. Keep those in the skill's own format.
 - Australian/British English ("initialisation", not "initialization")
 - Prefer plain punctuation: commas, colons, and full stops. Avoid em dashes and semicolons.
 - No emojis unless asked
