@@ -1,6 +1,6 @@
 ---
 name: flutter-gitea-apk-release
-description: Use when a Flutter repo needs installable signed Android builds out of CI - setting up release signing, a keystore, 1Password-sourced build config, or a Gitea Actions workflow that publishes an APK on a version tag.
+description: Use when a Flutter repo needs installable signed Android builds - setting up release signing, a keystore, product flavours, 1Password-sourced build config, local run and build-and-install scripts, or a Gitea Actions workflow that publishes an APK on a version tag.
 ---
 
 # Flutter signed APK releases via Gitea Actions and 1Password
@@ -32,7 +32,7 @@ Reference implementation: `uprise-budget-tracker/everything_app`, spec and plan 
 
 **Flavours.** A repo straight off the brick template has none. Step 1 adds `staging` and `production`, matching the reference. Skip it only if the app will never carry two installs side by side, in which case drop `--flavor` from every command below and read the APK at `build/app/outputs/flutter-apk/app-release.apk`.
 
-**Application ID.** The flavour suffix appends to whatever `applicationId` is already set. Check it reads the way you want before a keystore signs anything, because the ID is locked once you publish. A repo can carry a doubled name like `dev.calcode.paperlist.paperlist`, which comes from answering a scaffolder's organisation prompt with a full bundle id rather than the reverse-domain prefix alone: `flutter create` composes the id as `<org>.<project-name>`. The `based_flutter` brick warns about this at v0.3.2 or later, but only warns, so the generated `applicationId` is still worth reading before step 5. The keystore's certificate subject (step 5's `-genkey` prompts) is unrelated to `applicationId` — Android never checks it, so a mismatched or generic CN there is cosmetic, not a reason to regenerate.
+**Application ID.** The flavour suffix appends to whatever `applicationId` is already set. Check it reads the way you want before a keystore signs anything, because the ID is locked once you publish. A repo can carry a doubled name like `dev.calcode.paperlist.paperlist`, which comes from answering a scaffolder's organisation prompt with a full bundle id rather than the reverse-domain prefix alone: `flutter create` composes the id as `<org>.<project-name>`. The `based_flutter` brick warns when it spots this, but only warns, so read the generated `applicationId` yourself before step 5. The keystore's certificate subject (step 5's `-genkey` prompts) is unrelated to `applicationId` — Android never checks it, so a mismatched or generic CN there is cosmetic, not a reason to regenerate.
 
 **Signing fallback.** Two options in `buildTypes`:
 
@@ -161,7 +161,7 @@ Replace the stock `buildTypes` block, TODO comments and all:
 !/env/*.tpl.json
 ```
 
-Repos scaffolded from the `based_flutter` brick at v0.3.2 or later already ship that line. Check before adding a duplicate.
+Recent `based_flutter` scaffolds already ship that line. Read the file before adding a duplicate.
 
 Add nothing for `key.properties` or `*.jks`. Flutter's stock `android/.gitignore` already covers `key.properties`, `**/*.keystore` and `**/*.jks`, and a nested `.gitignore` outranks the root one. Its `key.properties` pattern matches that basename only, so `android/key.properties.tpl` stays tracked.
 
@@ -368,7 +368,7 @@ op read "op://<vault>/<app>-android-signing/upload-keystore.jks" --out-file andr
 op inject -i android/key.properties.tpl -o android/key.properties
 ```
 
-These use your desktop 1Password session. No service account token involved.
+These use your desktop 1Password session. No service account token involved. Step 10 wraps all of it in two scripts, which is what you want day to day.
 
 ### 9. Tag and verify
 
@@ -393,6 +393,33 @@ Expected: the CN from step 5. `CN=Android Debug` means Gradle took the fallback 
 
 Install it and confirm it reaches the sign-in screen. That proves `env/env.json` carried real values rather than empty strings.
 
+### 10. Local scripts
+
+Two scripts ship alongside this skill, in its `scripts/` directory. Copy both into the repo's `scripts/` **unedited** — they carry no `<app>`, `<vault>` or `<flavour>` placeholder, and every project-specific value is read at runtime:
+
+```fish
+mkdir -p scripts
+cp ~/.claude/skills/flutter-gitea-apk-release/scripts/{run.sh,build-apk.sh} scripts/
+```
+
+`run.sh [flavour] [project-dir]`, defaulting to `staging`, resolves the attached adb device, generates `env/env.json` from `env/<flavour>.tpl.json` if it is missing, and runs the app. The device lookup is dynamic because wireless adb hands out a different `ip:port` each connection.
+
+`build-apk.sh [flavour] [version-name]`, defaulting to `production`, materialises all three secrets, builds, installs, records the version, and prints the signing certificate.
+
+Neither is executable after a plain `cp`, so either `chmod +x scripts/*.sh` or invoke them as `bash scripts/run.sh`.
+
+Three things they derive rather than hardcode, which is what makes one copy work everywhere:
+
+| Value | Source |
+| --- | --- |
+| `applicationId` | `applicationId` in `android/app/build.gradle.kts`, plus `.<flavour>` per step 1's suffix convention |
+| Vault and item for the keystore | the `op://` path already in `android/key.properties.tpl` |
+| Env template | `env/<flavour>.tpl.json` |
+
+**Versioning differs from CI, deliberately.** The workflow takes the version name from the tag and the code from `gitea.run_number`, and never touches `pubspec.yaml`. `build-apk.sh` does the opposite: it reads `pubspec.yaml`, reads the `versionCode` already installed on the device, takes whichever is further ahead and adds one, then commits the bump — but only after the build and the install have both succeeded, so a failed run records nothing. The device is consulted because Android refuses to install a downgrade, and CI's run-number codes routinely overtake whatever `pubspec.yaml` says. Do not try to unify the two.
+
+The scripts assume GNU-free tooling (`awk`, `sed` with a temp file rather than `sed -i`, `keytool` rather than `apksigner`), so they run on macOS as well as Linux. `keytool -printcert -jarfile` reads the v1 JAR signature, so it prints nothing if v1 signing is ever disabled; `apksigner verify --print-certs` is the fallback if that happens.
+
 ## Failure symptoms
 
 | Symptom | Cause |
@@ -408,6 +435,7 @@ Install it and confirm it reaches the sign-in screen. That proves `env/env.json`
 | `op inject` leaves `op://` strings | Field label mismatch, which step 6's `grep` should have caught |
 | Gradle `Keystore file not found` | Attachment filename is not exactly `upload-keystore.jks` |
 | APK reports `CN=Android Debug` | `key.properties` absent and the Gradle fallback swallowed it |
+| `build-apk.sh` restarts the version code at 1 | `applicationId` in Gradle no longer matches the installed package, so the `dumpsys` lookup returns nothing |
 
 ## Out of scope
 
