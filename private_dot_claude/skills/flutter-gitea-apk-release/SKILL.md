@@ -25,7 +25,6 @@ Reference implementation: `uprise-budget-tracker/everything_app`, spec and plan 
 | `<app>` | `everything-app` | vault item prefix, APK filename |
 | `<App>` | `Uprise` | launcher name per flavour |
 | `<vault>` | `infra-ci` | every `op://` reference |
-| `<flutter>` | `3.44.6` | workflow, must match `.fvmrc` |
 | `<flavour>` | `production` | build args, APK output path |
 | `<env keys>` | six keys in `env/example.json` | both templates, both vault items |
 
@@ -33,7 +32,7 @@ Reference implementation: `uprise-budget-tracker/everything_app`, spec and plan 
 
 **Flavours.** A repo straight off the brick template has none. Step 1 adds `staging` and `production`, matching the reference. Skip it only if the app will never carry two installs side by side, in which case drop `--flavor` from every command below and read the APK at `build/app/outputs/flutter-apk/app-release.apk`.
 
-**Application ID.** The flavour suffix appends to whatever `applicationId` is already set. Check it reads the way you want before a keystore signs anything, because the ID is locked once you publish. A brick-scaffolded repo can carry a doubled name like `dev.calcode.paperlist.paperlist`. The keystore's certificate subject (step 5's `-genkey` prompts) is unrelated to `applicationId` — Android never checks it, so a mismatched or generic CN there is cosmetic, not a reason to regenerate.
+**Application ID.** The flavour suffix appends to whatever `applicationId` is already set. Check it reads the way you want before a keystore signs anything, because the ID is locked once you publish. A repo can carry a doubled name like `dev.calcode.paperlist.paperlist`, which comes from answering a scaffolder's organisation prompt with a full bundle id rather than the reverse-domain prefix alone: `flutter create` composes the id as `<org>.<project-name>`. The `based_flutter` brick warns about this at v0.3.2 or later, but only warns, so the generated `applicationId` is still worth reading before step 5. The keystore's certificate subject (step 5's `-genkey` prompts) is unrelated to `applicationId` — Android never checks it, so a mismatched or generic CN there is cosmetic, not a reason to regenerate.
 
 **Signing fallback.** Two options in `buildTypes`:
 
@@ -156,11 +155,13 @@ Replace the stock `buildTypes` block, TODO comments and all:
 
 ### 3. Gitignore negation
 
-`.gitignore` carries `/env/*.json`, which swallows `env/production.tpl.json` with no error. Add one line:
+`.gitignore` carries `/env/*.json`, which swallows `env/production.tpl.json` with no error. One line fixes it:
 
 ```
 !/env/*.tpl.json
 ```
+
+Repos scaffolded from the `based_flutter` brick at v0.3.2 or later already ship that line. Check before adding a duplicate.
 
 Add nothing for `key.properties` or `*.jks`. Flutter's stock `android/.gitignore` already covers `key.properties`, `**/*.keystore` and `**/*.jks`, and a nested `.gitignore` outranks the root one. Its `key.properties` pattern matches that basename only, so `android/key.properties.tpl` stays tracked.
 
@@ -274,21 +275,24 @@ jobs:
       image: ghcr.io/cirruslabs/android-sdk:36-ndk
 
     steps:
-      - name: Install Node.js
+      - name: Install Node.js and jq
         run: |
           curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
-          apt-get install -y nodejs
+          apt-get install -y nodejs jq
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        id: flutter
         with:
-          flutter-version: "<flutter>"
+          flutter-version-file: .fvmrc
           channel: stable
           cache: true
 
       - name: Trust Flutter SDK git directory
-        run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-<flutter>-x64/flutter
+        env:
+          SDK: ${{ steps.flutter.outputs.CACHE-PATH }}
+        run: git config --global --add safe.directory "$SDK/flutter"
 
       - name: Install 1Password CLI
         run: |
@@ -338,7 +342,9 @@ Why each odd bit is there, all of it learned from failed runs:
 | Line | Reason |
 | --- | --- |
 | Node.js install, before checkout | The android-sdk image ships no Node. Gitea runs JavaScript actions with it, so `actions/checkout` fails without this step. |
-| `safe.directory` for the Flutter SDK | The SDK is installed as a different user than the one running the build. Git refuses to read it and `flutter` fails on version detection. |
+| `jq` alongside Node | flutter-action's `setup.sh` parses `.fvmrc` with `jq` and aborts with "jq not found" if it is absent. The image ships none. |
+| `flutter-version-file: .fvmrc` | A hardcoded `flutter-version` drifts from `.fvmrc` the moment either moves, and nothing catches it: CI keeps building green against an SDK the project no longer pins. Reading the file makes drift impossible. |
+| `safe.directory` for the Flutter SDK | The SDK is installed as a different user than the one running the build. Git refuses to read it and `flutter` fails on version detection. The path comes from the action's `CACHE-PATH` output, which is the only version-independent way to name it. |
 | Pinned action SHAs | Gitea resolves actions through a mirror. A moving tag can hand you a different action than the one you reviewed. |
 | `timeout-minutes: 30` | A hung Gradle download otherwise burns runner time until the default cap. |
 | `op` CLI pinned | Only some versions resolve at the `cache.agilebits.com` zip path. 2.38.1 works; check the URL yourself before choosing another. |
@@ -394,6 +400,7 @@ Install it and confirm it reaches the sign-in screen. That proves `env/env.json`
 | Gradle picks no variant | A `flutter` command is missing `--flavor` |
 | Duplicate resource `app_name` | `strings.xml` still defines it alongside the `resValue` entries |
 | Job never starts, `container:` unsupported | act_runner is not Docker-backed |
+| flutter-action prints "jq not found" | The jq install is missing from the Node step |
 | `actions/checkout` fails immediately | Node install step missing or ordered after checkout |
 | `flutter` fails on version detection | `safe.directory` step missing |
 | Cannot resolve an action | Gitea's action mirror does not carry it |

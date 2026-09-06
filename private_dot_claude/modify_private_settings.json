@@ -2,7 +2,7 @@
 current="$(cat)"
 [ -z "$current" ] && current='{}'
 
-no_slop='{"matcher":"Write|Edit","hooks":[{"type":"command","command":"python3 \"/Users/Callum.Kane/.claude/hooks/no-slop-comments.py\""}]}'
+no_slop='{"matcher":"Write|Edit","hooks":[{"type":"command","command":"python3 \"$HOME/.claude/hooks/no-slop-comments.py\""}]}'
 
 echo "$current" | jq --argjson noSlop "$no_slop" '
   .hooks.PreToolUse = ([$noSlop] + [(.hooks.PreToolUse // [])[]
