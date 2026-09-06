@@ -61,6 +61,8 @@ hide_tab_bar_when_single_tab = true
 floating_pane_width = "90%"
 floating_pane_height = "90%"
 
+[ui.sidebar.spaces]
+divider = true
 
 [theme]
 name = "terminal"
