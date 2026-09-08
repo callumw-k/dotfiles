@@ -39,19 +39,11 @@ rename_pane = ["prefix+shift+p", "alt+r"]
 
 
 
+[ui.sidebar.spaces]
+divider = true
+
 [keys.indexed]
 agents = "alt"
-
-# [[keys.command]]
-# key = "alt+r"
-# type = "plugin_action"
-# command = "persiyanov.reviewr.toggle"
-
-# [[keys.command]]
-# key = "alt+shift+f"
-# type = "plugin_action"
-# command = "sessionizer.open"
-# description = "open project workspace"
 
 [ui]
 agent_panel_sort = "spaces"
@@ -60,9 +52,6 @@ prompt_new_tab_name = false
 hide_tab_bar_when_single_tab = true
 floating_pane_width = "90%"
 floating_pane_height = "90%"
-
-[ui.sidebar.spaces]
-divider = true
 
 [theme]
 name = "terminal"
