@@ -14,9 +14,9 @@ Architecture:
 - Gradle reads signing credentials from `android/key.properties`.
 - Committed `*.tpl` files hold `op://` paths, never values. `op inject` materialises the real files identically on your machine and on the runner.
 - One Gitea repository secret, `OP_SERVICE_ACCOUNT_TOKEN`, lets the runner reach the vault. `GITEA_TOKEN` is injected by the runner already.
-- Version name comes from the tag, version code from `gitea.run_number`. `pubspec.yaml` never changes for a release.
+- `pubspec.yaml`'s `version:` is the source of truth. The local build script writes it and tags it, and the workflow refuses to build a tag that disagrees.
 
-Reference implementation: `uprise-budget-tracker/everything_app`, spec and plan under `docs/superpowers/specs/2026-07-28-gitea-apk-release-pipeline-design.md`.
+Reference implementations: `uprise-budget-tracker/everything_app`, spec and plan under `docs/superpowers/specs/2026-07-28-gitea-apk-release-pipeline-design.md`, and `paperlist`, which carries the same `scripts/` plus a notarised macOS release.
 
 ## Substitute these per project
 
@@ -30,7 +30,7 @@ Reference implementation: `uprise-budget-tracker/everything_app`, spec and plan 
 
 ## Decide before you start
 
-**Flavours.** A repo straight off the brick template has none. Step 1 adds `staging` and `production`, matching the reference. Skip it only if the app will never carry two installs side by side, in which case drop `--flavor` from every command below and read the APK at `build/app/outputs/flutter-apk/app-release.apk`.
+**Flavours.** A repo straight off the brick template has none. Step 1 adds `staging`, `profiling` and `production`, matching the reference. Skip it only if the app will never carry two installs side by side, in which case drop `--flavor` from every command below and read the APK at `build/app/outputs/flutter-apk/app-release.apk`.
 
 **Application ID.** The flavour suffix appends to whatever `applicationId` is already set. Check it reads the way you want before a keystore signs anything, because the ID is locked once you publish. A repo can carry a doubled name like `dev.calcode.paperlist.paperlist`, which comes from answering a scaffolder's organisation prompt with a full bundle id rather than the reverse-domain prefix alone: `flutter create` composes the id as `<org>.<project-name>`. The `based_flutter` brick warns when it spots this, but only warns, so read the generated `applicationId` yourself before step 5. The keystore's certificate subject (step 5's `-genkey` prompts) is unrelated to `applicationId` — Android never checks it, so a mismatched or generic CN there is cosmetic, not a reason to regenerate.
 
@@ -54,7 +54,7 @@ which fails the build loudly when the keystore is absent. Pick the strict form u
 
 Flavours are Android-only here. The Dart side reads its config from `--dart-define-from-file`, so no second `main_*.dart` entrypoint and no `dart-define` of a flavour name.
 
-AGP 8+ disables `resValue` generation by default, and the flavours below fail Gradle sync with "contains custom resource values, but the feature is disabled" without this opt-in. In `android/app/build.gradle.kts`, inside the `android` block:
+AGP 9 disables `resValue` generation by default, and the flavours below fail Gradle sync with "contains custom resource values, but the feature is disabled" without this opt-in. AGP 8 needs nothing: `everything_app` runs 8.11 with three `resValue` flavours and no opt-in, while `paperlist` runs 9.0 and needs it. Adding it on 8 is harmless, so add it either way. In `android/app/build.gradle.kts`, inside the `android` block:
 
 ```kotlin
     buildFeatures {
@@ -77,6 +77,17 @@ Then, inside the `android` block after `defaultConfig`:
             )
             applicationIdSuffix = ".staging"
         }
+        // Named "profiling" because a flavour name cannot collide with a build
+        // type, and Flutter defines a `profile` type.
+        create("profiling") {
+            dimension = "default"
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "<App> (profiling)"
+            )
+            applicationIdSuffix = ".profiling"
+        }
         create("production") {
             dimension = "default"
             resValue(
@@ -89,7 +100,7 @@ Then, inside the `android` block after `defaultConfig`:
     }
 ```
 
-The suffixes are what let both builds sit on one device. The `resValue` entries give each a distinct launcher name, so you can tell them apart.
+The suffixes are what let all three builds sit on one device at once. The `resValue` entries give each a distinct launcher name, so you can tell them apart. `profiling` runs off the staging backend and exists so a profile-mode build can sit beside the debug one rather than replacing it.
 
 In `android/app/src/main/AndroidManifest.xml`, swap the hardcoded label:
 
@@ -99,9 +110,9 @@ In `android/app/src/main/AndroidManifest.xml`, swap the hardcoded label:
 
 `resValue` generates that string resource per flavour. If `android/app/src/main/res/values/strings.xml` already defines `app_name`, delete that entry or the build fails on a duplicate resource.
 
-Both flavours still declare the same auth callback scheme in the manifest, so a device carrying both shows a chooser when the OAuth redirect fires. The reference app lives with it. Splitting the scheme means a per-flavour manifest and matching redirect URIs in both vault items.
+The flavours all declare the same auth callback scheme in the manifest, so a device carrying more than one shows a chooser when the OAuth redirect fires. The reference app lives with it. Splitting the scheme means a per-flavour manifest and matching redirect URIs in both vault items.
 
-From here every `flutter run` and `flutter build` needs `--flavor staging` or `--flavor production`. Without one, Gradle fails with no default variant. Update `CLAUDE.md` so nobody rediscovers that — create the file if the repo doesn't have one yet.
+From here every `flutter run` and `flutter build` needs a `--flavor`. Without one, Gradle fails with no default variant. Update `CLAUDE.md` so nobody rediscovers that — create the file if the repo doesn't have one yet.
 
 Verify:
 
@@ -216,7 +227,7 @@ keytool -genkey -v -keystore ~/.config/keystores/<app>/upload-keystore.jks -stor
   -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 ```
 
-Record the CN you enter. Step 9 checks the APK certificate against it.
+Record the CN you enter. Step 10 checks the APK certificate against it.
 
 ### 6. Vault
 
@@ -282,6 +293,19 @@ jobs:
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Resolve version
+        env:
+          TAG: ${{ gitea.ref_name }}
+        run: |
+          VERSION=$(awk '/^version:/{print $2; exit}' pubspec.yaml)
+          if [ "$VERSION" != "${TAG#v}" ]; then
+            echo "Tag ${TAG} does not match pubspec version ${VERSION}" >&2
+            exit 1
+          fi
+          echo "BUILD_NAME=${VERSION%+*}" >> "$GITHUB_ENV"
+          echo "BUILD_NUMBER=${VERSION#*+}" >> "$GITHUB_ENV"
+          echo "APK_NAME=<app>-v${VERSION/+/-}.apk" >> "$GITHUB_ENV"
+
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         id: flutter
         with:
@@ -315,21 +339,16 @@ jobs:
       - run: flutter test
 
       - name: Build APK
-        env:
-          TAG: ${{ gitea.ref_name }}
         run: |
           flutter build apk --release \
             --flavor <flavour> \
             --dart-define-from-file=env/env.json \
-            --build-name="${TAG#v}" \
-            --build-number="${{ gitea.run_number }}"
+            --build-name="${BUILD_NAME}" \
+            --build-number="${BUILD_NUMBER}"
 
       - name: Name the artifact
-        env:
-          TAG: ${{ gitea.ref_name }}
         run: |
-          mv build/app/outputs/flutter-apk/app-<flavour>-release.apk \
-             "<app>-${TAG}.apk"
+          mv build/app/outputs/flutter-apk/app-<flavour>-release.apk "${APK_NAME}"
 
       - uses: akkuman/gitea-release-action@b8d9144f302c68610911db1aaf722708d5c02d94 # v1.3.6
         with:
@@ -341,6 +360,7 @@ Why each odd bit is there, all of it learned from failed runs:
 
 | Line | Reason |
 | --- | --- |
+| Resolve version, before the SDK setup | A tag that disagrees with `pubspec.yaml` fails in seconds rather than after a full build. `${VERSION/+/-}` because a `+` in a filename becomes a space in the download URL. |
 | Node.js install, before checkout | The android-sdk image ships no Node. Gitea runs JavaScript actions with it, so `actions/checkout` fails without this step. |
 | `jq` alongside Node | flutter-action's `setup.sh` parses `.fvmrc` with `jq` and aborts with "jq not found" if it is absent. The image ships none. |
 | `flutter-version-file: .fvmrc` | A hardcoded `flutter-version` drifts from `.fvmrc` the moment either moves, and nothing catches it: CI keeps building green against an SDK the project no longer pins. Reading the file makes drift impossible. |
@@ -368,57 +388,71 @@ op read "op://<vault>/<app>-android-signing/upload-keystore.jks" --out-file andr
 op inject -i android/key.properties.tpl -o android/key.properties
 ```
 
-These use your desktop 1Password session. No service account token involved. Step 10 wraps all of it in two scripts, which is what you want day to day.
+These use your desktop 1Password session. No service account token involved. Step 9 wraps all of it in three files, which is what you want day to day.
 
-### 9. Tag and verify
+### 9. Local scripts
+
+Three files ship alongside this skill, in its `scripts/` directory. Copy all three in **unedited**. They name no app, vault or flavour, because `lib.sh` derives those at runtime:
 
 ```fish
-git tag v0.1.0
-git push origin v0.1.0
+mkdir -p scripts
+cp ~/.claude/skills/flutter-gitea-apk-release/scripts/{lib.sh,run.sh,build-apk.sh} scripts/
+chmod +x scripts/run.sh scripts/build-apk.sh
 ```
+
+The split is long-lived against one-shot, which keeps `run.sh` off limits to an agent as a whole file rather than depending on an argument:
+
+| Command | Mode | Env | Signing | Version and tag |
+| --- | --- | --- | --- | --- |
+| `run.sh` or `run.sh staging` | debug | staging | debug | no |
+| `run.sh profiling` | profile | staging | debug | no |
+| `build-apk.sh staging` | debug | staging | debug | no |
+| `build-apk.sh profiling` | profile | staging | debug | no |
+| `build-apk.sh production` | release | production | upload key | yes |
+
+Each flavour has one build mode worth shipping, so the mode follows the flavour and never needs a flag of its own. Only `production` reads the keystore, because the `release` build type is the only one carrying a signing config. Every `build-apk.sh` run copies its APK to `<share>/<app>/<flavour>` when the share is mounted, and installs unless you pass `--no-install`.
+
+`lib.sh` is sourced by the other two and holds what they share. What it derives, and from where:
+
+| Value | Source |
+| --- | --- |
+| App name | `name:` in `pubspec.yaml`, underscores to hyphens, which is what the vault items and APK filenames use. A macOS build needs `PRODUCT_NAME` in `AppInfo.xcconfig` to match that converted form |
+| Base `applicationId` | `applicationId` in `android/app/build.gradle.kts`, plus `.<flavour>` per step 1's suffix convention |
+| Keystore vault item | the `op://` path already in `android/key.properties.tpl` |
+| Artifacts share | hardcoded `/mnt/code-artifacts`, since the share belongs to the machine |
+
+`run.sh [staging|profiling]` regenerates `env/env.json`, resolves the attached adb device and runs. `build-apk.sh <flavour> [version-name] [--no-install]` materialises the secrets that flavour needs, builds, installs, copies the APK to the share, and for production prints the signing certificate and records the version.
+
+**One version scheme, local and CI.** `pubspec.yaml` is the record of the last release. `build-apk.sh production` reads it, reads the `versionCode` already installed on the device, takes whichever is further ahead and adds one, then writes the result back to pubspec, commits it and tags `v<name>+<number>`. All of that runs after the build and the install have both succeeded, so a failed run records nothing. It consults the device because Android refuses to install a downgrade. Push with `git push --follow-tags`. `--no-install` skips the pubspec write and the tag, since a build nobody installed is not a release.
+
+The scripts keep to POSIX flags (`awk` and `sed -n` over `grep -oP`, a temp file over `sed -i`), so they run on macOS as well as Linux. `verify_signature` needs `ANDROID_HOME` pointing at an SDK with build-tools, because `apksigner` reads the v2 and v3 signatures that `keytool -printcert -jarfile` cannot see.
+
+### 10. First release and verify
+
+The first release comes from the script rather than a hand-cut tag, because step 7 checks the tag against `pubspec.yaml`:
+
+```fish
+./scripts/build-apk.sh production 0.1.0
+git push --follow-tags
+```
+
+The build number lands one above whatever `flutter create` left in pubspec, so the tag reads `v0.1.0+2` and the release asset carries the same pair with the `+` swapped for a `-`.
 
 Then download the APK from the release page and read its certificate:
 
 ```fish
-keytool -printcert -jarfile <app>-v0.1.0.apk
+keytool -printcert -jarfile <app>-v0.1.0-*.apk
 ```
 
 Without a JDK:
 
 ```fish
-unzip -p <app>-v0.1.0.apk 'META-INF/*.RSA' | openssl pkcs7 -inform DER -print_certs -text -noout | grep -A1 'Subject:'
+unzip -p <app>-v0.1.0-*.apk 'META-INF/*.RSA' | openssl pkcs7 -inform DER -print_certs -text -noout | grep -A1 'Subject:'
 ```
 
 Expected: the CN from step 5. `CN=Android Debug` means Gradle took the fallback path and `key.properties` was never written.
 
 Install it and confirm it reaches the sign-in screen. That proves `env/env.json` carried real values rather than empty strings.
-
-### 10. Local scripts
-
-Two scripts ship alongside this skill, in its `scripts/` directory. Copy both into the repo's `scripts/` **unedited** — they carry no `<app>`, `<vault>` or `<flavour>` placeholder, and every project-specific value is read at runtime:
-
-```fish
-mkdir -p scripts
-cp ~/.claude/skills/flutter-gitea-apk-release/scripts/{run.sh,build-apk.sh} scripts/
-```
-
-`run.sh [flavour] [project-dir]`, defaulting to `staging`, resolves the attached adb device, generates `env/env.json` from `env/<flavour>.tpl.json` if it is missing, and runs the app. The device lookup is dynamic because wireless adb hands out a different `ip:port` each connection.
-
-`build-apk.sh [flavour] [version-name]`, defaulting to `production`, materialises all three secrets, builds, installs, records the version, and prints the signing certificate.
-
-Neither is executable after a plain `cp`, so either `chmod +x scripts/*.sh` or invoke them as `bash scripts/run.sh`.
-
-Three things they derive rather than hardcode, which is what makes one copy work everywhere:
-
-| Value | Source |
-| --- | --- |
-| `applicationId` | `applicationId` in `android/app/build.gradle.kts`, plus `.<flavour>` per step 1's suffix convention |
-| Vault and item for the keystore | the `op://` path already in `android/key.properties.tpl` |
-| Env template | `env/<flavour>.tpl.json` |
-
-**Versioning differs from CI, deliberately.** The workflow takes the version name from the tag and the code from `gitea.run_number`, and never touches `pubspec.yaml`. `build-apk.sh` does the opposite: it reads `pubspec.yaml`, reads the `versionCode` already installed on the device, takes whichever is further ahead and adds one, then commits the bump — but only after the build and the install have both succeeded, so a failed run records nothing. The device is consulted because Android refuses to install a downgrade, and CI's run-number codes routinely overtake whatever `pubspec.yaml` says. Do not try to unify the two.
-
-The scripts assume GNU-free tooling (`awk`, `sed` with a temp file rather than `sed -i`, `keytool` rather than `apksigner`), so they run on macOS as well as Linux. `keytool -printcert -jarfile` reads the v1 JAR signature, so it prints nothing if v1 signing is ever disabled; `apksigner verify --print-certs` is the fallback if that happens.
 
 ## Failure symptoms
 
@@ -435,7 +469,9 @@ The scripts assume GNU-free tooling (`awk`, `sed` with a temp file rather than `
 | `op inject` leaves `op://` strings | Field label mismatch, which step 6's `grep` should have caught |
 | Gradle `Keystore file not found` | Attachment filename is not exactly `upload-keystore.jks` |
 | APK reports `CN=Android Debug` | `key.properties` absent and the Gradle fallback swallowed it |
+| Workflow fails on "does not match pubspec version" | A tag was cut by hand rather than by `build-apk.sh production`, or the pubspec commit was never pushed |
 | `build-apk.sh` restarts the version code at 1 | `applicationId` in Gradle no longer matches the installed package, so the `dumpsys` lookup returns nothing |
+| `lib.sh` says "No pubspec name or applicationId" | It ran outside the repo root, or `applicationId` is assigned through a variable rather than a literal string |
 
 ## Out of scope
 

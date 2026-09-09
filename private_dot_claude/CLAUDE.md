@@ -7,6 +7,7 @@
 - Never use `git --no-verify`
 - Never commit directly to main without asking. If the current branch is main, propose a branch or worktree, or ask whether a small self-contained change can go direct.
 - Never include `Co-Authored-By` or any Claude/Anthropic reference in commit messages
+- Never run `flutter run`, `flutter build`, or a repo's build or install scripts yourself, in any session or subagent. Hand the command to me and wait for the output.
 
 ## Style
 - Any written artefact — files, tickets, PR/commit comments, Confluence pages, reports — gets two passes: `humanizer` for sentence-level AI tells, then `callum-stop-slop` for document-level repetition. Invoke both, don't wing the tone. Skip humanizer where the text has already had a line-level pass, since running it twice causes over-compression.

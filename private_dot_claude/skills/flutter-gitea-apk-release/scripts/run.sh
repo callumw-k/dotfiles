@@ -1,27 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
+cd "$(dirname "$0")/.."
+source scripts/lib.sh
 
-flavour="${1:-staging}"
-cd "${2:-$(dirname "$0")/..}"
+case "${1:-staging}" in
+  staging) flavour=staging; mode=debug ;;
+  profiling) flavour=profiling; mode=profile ;;
+  *) echo "usage: $0 [staging|profiling]" >&2; exit 1 ;;
+esac
 
-# Wireless adb reports an ip:port that changes per connection.
-serial=$(adb devices | awk '$2=="device"{print $1; exit}')
-if [ -z "$serial" ]; then
-  echo "No adb device attached. Connect first:" >&2
-  echo "  adb pair <ip>:<port>" >&2
-  echo "  adb connect <ip>:<port>" >&2
-  exit 1
-fi
+op inject -f -i env/staging.tpl.json -o env/env.json
 
-tpl="env/$flavour.tpl.json"
-if [ ! -f "$tpl" ]; then
-  echo "No $tpl, so flavour '$flavour' has no env template." >&2
-  exit 1
-fi
+serial=$(adb_serial)
+[[ -n "$serial" ]] || die_no_device
 
-# Generated once and reused: delete env/env.json to pull fresh values.
-if [ ! -f env/env.json ]; then
-  op inject -i "$tpl" -o env/env.json
-fi
-
-fvm flutter run -d "$serial" --flavor "$flavour" --dart-define-from-file=env/env.json
+exec fvm flutter run -d "$serial" --flavor "$flavour" "--$mode" --dart-define-from-file=env/env.json
