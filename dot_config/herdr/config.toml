@@ -74,4 +74,7 @@ path = "~/Documents/notes/vault"
 path = "~/Documents/code/drive-alternator"
 
 [[repos]]
+path = "~/Documents/code/drive-harness"
+
+[[repos]]
 path = "/Users/Callum.Kane/.local/share/chezmoi"
