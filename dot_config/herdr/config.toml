@@ -52,10 +52,11 @@ floating_pane_width = "90%"
 floating_pane_height = "90%"
 
 [ui.sidebar.agents]
-rows = [["activity"]]
+rows = [["state_icon", "activity"]]
 
 [ui.sidebar.spaces]
-divider = true
+divider = false
+row_gap = 1
 
 [theme]
 name = "terminal"
