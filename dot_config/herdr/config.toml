@@ -54,13 +54,12 @@ floating_pane_height = "90%"
 [ui.sidebar.agents]
 row_gap = 0
 rows = [
-  ["state_icon", { token = "activity", bold = true }],
-  [{ text = "  " }, { token = "state_text", dim = true }],
+  [{ token = "activity" }],
+  [{ token = "state_text", dim = true }, {token = "agent", dim = true}],
 ]
 
 [ui.sidebar.spaces]
-divider = false
-row_gap = 1
+divider = true
 
 [theme]
 name = "terminal"

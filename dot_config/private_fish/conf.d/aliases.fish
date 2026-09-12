@@ -47,7 +47,6 @@ if status is-interactive
     alias vf='vim $(fzf)'
     alias zu='z ..'
     alias zp='z -'
-    alias typora="open -a typora"
     alias cl='claude'
     alias fcat='cat "$(fzf)"'
     alias fim='vim "$(fzf)"'
