@@ -52,7 +52,11 @@ floating_pane_width = "90%"
 floating_pane_height = "90%"
 
 [ui.sidebar.agents]
-rows = [["state_icon", "activity"]]
+row_gap = 0
+rows = [
+  ["state_icon", { token = "workspace", bold = true }],
+  [{ token = "activity", dim = true }, { token = "state_text", dim = true }, { token = "agent", dim = true }],
+]
 
 [ui.sidebar.spaces]
 divider = false
