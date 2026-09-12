@@ -55,7 +55,7 @@ floating_pane_height = "90%"
 row_gap = 0
 rows = [
   ["state_icon", { token = "activity", bold = true }],
-  [{ token = "state_text", dim = true }],
+  [{ text = "  " }, { token = "state_text", dim = true }],
 ]
 
 [ui.sidebar.spaces]
