@@ -52,7 +52,6 @@ floating_pane_width = "90%"
 floating_pane_height = "90%"
 
 [ui.sidebar.agents]
-row_gap = 0
 rows = [
   [{ token = "activity" }],
   [{ token = "state_text", dim = true }, {token = "agent", dim = true}],
