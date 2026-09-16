@@ -51,4 +51,6 @@ if status is-interactive
     alias fcat='cat "$(fzf)"'
     alias fim='vim "$(fzf)"'
     alias fz='z "$(fd --type d | fzf)"'
+    alias gwl='git worktree list'
+    alias gwp='git worktree prune'
 end
