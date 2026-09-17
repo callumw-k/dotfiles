@@ -37,9 +37,6 @@ goto = ["prefix+g", "alt+shift+p"]
 rename_tab = ["prefix+shift+t", "alt+shift+r"]
 rename_pane = ["prefix+shift+p", "alt+r"]
 
-
-
-
 [keys.indexed]
 agents = "alt"
 
