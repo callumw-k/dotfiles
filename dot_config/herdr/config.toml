@@ -66,12 +66,17 @@ divider = true
 name = "terminal"
 auto_switch = false
 
+# Work Macbook
 [[repos]]
 path = "~/Documents/code"
 children = true
 
 [[repos]]
-path = "~/Documents/notes/vault"
+path = "~/code/active"
+children = true
 
 [[repos]]
-path = "/Users/Callum.Kane/.local/share/chezmoi"
+path = "~/.local/share/chezmoi"
+
+[[repos]]
+path = "~/Documents/notes/vault"
