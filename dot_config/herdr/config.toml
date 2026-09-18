@@ -72,6 +72,10 @@ path = "~/Documents/code"
 children = true
 
 [[repos]]
+path = "~/documents/test-code"
+children = true 
+
+[[repos]]
 path = "~/code/active"
 children = true
 
