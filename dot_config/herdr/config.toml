@@ -80,6 +80,10 @@ path = "~/code/active"
 children = true
 
 [[repos]]
+path = "~/Documents/projects/active"
+children = true
+
+[[repos]]
 path = "~/.local/share/chezmoi"
 
 [[repos]]

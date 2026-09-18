@@ -34,9 +34,7 @@ switch (uname)
         set _asdf_shims "$ASDF_DATA_DIR/shims"
       end
 
-      if not contains $_asdf_shims $PATH
-        set -gx --prepend PATH $_asdf_shims
-      end
+      fish_add_path --global --path --move $_asdf_shims
 
       if test -f $HOME/.pub-cache/bin
           fish_add_path $HOME/.pub-cache/bin
@@ -49,7 +47,7 @@ end
 
 if test -d $HOME/.config/android-sdk
   set -x ANDROID_HOME $HOME/.config/android-sdk
-  fish_add_path $ANDROID_HOME
+  fish_add_path $ANDROID_HOME/platform-tools
 end
 
 for dir in \
