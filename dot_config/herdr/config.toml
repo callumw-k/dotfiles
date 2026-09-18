@@ -80,3 +80,6 @@ path = "~/.local/share/chezmoi"
 
 [[repos]]
 path = "~/Documents/notes/vault"
+
+[[repos]]
+path = "~/.claude"
