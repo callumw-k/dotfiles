@@ -22,12 +22,16 @@ config.window_padding = {
 
 config.window_close_confirmation = "NeverPrompt"
 
+config.keys = {
+	{ key = "t", mods = "ALT|SHIFT", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
+	{ key = "LeftArrow", mods = "ALT|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
+	{ key = "RightArrow", mods = "ALT|SHIFT", action = wezterm.action.ActivateTabRelative(1) },
+}
+
 {{ if eq .chezmoi.os "darwin" -}}
-  config.default_prog = { "/opt/homebrew/bin/zellij" }
   config.font_size = 14
 {{ else -}}
   config.font_size = 12
-  config.default_prog = { "zellij" }
 {{ end -}}
 
 -- This is where you actually apply your config choices
