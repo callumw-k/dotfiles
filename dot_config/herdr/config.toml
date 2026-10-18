@@ -63,16 +63,12 @@ floating_pane_height = "90%"
 
 [ui.sidebar.agents]
 rows = [
-  [{ token = "index" }, { token = "activity" }],
+  [{ token = "activity" }],
   [{ token = "state_text", dim = true }, {token = "agent", dim = true}],
 ]
 
 [ui.sidebar.spaces]
 divider = true
-rows = [
-  ["index", "state_icon", "workspace"],
-  ["branch", "git_status"],
-]
 
 [theme]
 name = "terminal"
