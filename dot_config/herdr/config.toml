@@ -37,7 +37,7 @@ workspace_picker = ["prefix+w", "alt+s"]
 
 resize_mode = ["prefix+r", "ctrl+n"]
 toggle_float = "alt+f"
-goto = ["prefix+g", "alt+shift+p"]
+goto = ["prefix+g", "alt+p"]
 
 rename_tab = ["prefix+shift+t", "alt+shift+r"]
 # rename_pane = ["prefix+shift+p", "alt+r"]
@@ -52,7 +52,6 @@ agents = "alt"
 
 [ui]
 agent_panel_sort = "spaces"
-agent_panel_follows_workspace = true
 tab_bar_status = true
 tab_bar_workspace = false
 tab_bar_style = "quiet"
