@@ -17,6 +17,7 @@
     "bindings": {
       "space f p": "file_finder::Toggle",
       "space f g": "buffer_search::Deploy",
+      "space m p": "markdown::OpenPreviewToTheSide",
       "space w": "workspace::Save",
       "space b d": "pane::CloseActiveItem",
       "space p v": "project_panel::Toggle",
