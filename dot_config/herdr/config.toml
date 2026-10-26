@@ -76,6 +76,9 @@ divider = true
 name = "terminal"
 auto_switch = false
 
+[theme.custom]
+accent = "lightmagenta"
+
 # Work Macbook
 [[repos]]
 path = "~/Documents/code"
