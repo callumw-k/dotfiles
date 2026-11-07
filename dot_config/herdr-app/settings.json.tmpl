@@ -1,0 +1,15 @@
+{
+  "zoom": 1.0,
+  "sounds": {
+    "enabled": true
+  },
+  "font_ligatures": false,
+  "minimum_contrast": 1.0,
+  "theme": "catppuccin-macchiato",
+  "font": "Monaspace Neon",
+{{- if eq .chezmoi.os "darwin" }}
+  "font_size": 14
+{{- else }}
+  "font_size": 12
+{{- end }}
+}
