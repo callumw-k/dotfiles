@@ -8,5 +8,15 @@
   "font_ligatures": false,
   "ui_font": "Monaspace Neon",
   "minimum_contrast": 1.0,
-  "theme": "catppuccin-macchiato"
+  "theme": "catppuccin-macchiato",
+  "repos": [
+    { "path": "~/Documents/code", "children": true },
+    { "path": "~/Documents/test-code", "children": true },
+    { "path": "~/code/active", "children": true },
+    { "path": "~/.config/nvim", "children": true },
+    { "path": "~/Documents/projects", "children": true },
+    { "path": "~/.local/share/chezmoi" },
+    { "path": "~/Documents/notes/vault" },
+    { "path": "~/.claude" }
+  ]
 }
