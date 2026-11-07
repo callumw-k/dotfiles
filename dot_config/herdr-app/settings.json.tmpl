@@ -1,9 +1,5 @@
 {
-{{- if eq .chezmoi.os "darwin" }}
   "zoom": 1.0,
-{{- else }}
-  "zoom": 1.25,
-{{- end }}
   "sounds": {
     "enabled": true
   },
@@ -11,9 +7,5 @@
   "minimum_contrast": 1.0,
   "theme": "catppuccin-macchiato",
   "font": "Monaspace Neon",
-{{- if eq .chezmoi.os "darwin" }}
   "font_size": 14
-{{- else }}
-  "font_size": 12
-{{- end }}
 }
