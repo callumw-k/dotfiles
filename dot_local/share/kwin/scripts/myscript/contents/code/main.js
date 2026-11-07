@@ -1,29 +1,34 @@
 // List of window classes NOT to move
 const EXCLUDED_CLASSES = [
   "plasmashell",
+  "org.kde.plasmashell",
   "krunner",
   "yakuake",
   "systemsettings",
   "org.freedesktop.impl.portal.desktop.kde",
   "brave-browser",
-  "spotify spotify",
+  "spotify",
   "vesktop",
   "org.kde.spectacle",
   "obsidian",
+  "md.obsidian.obsidian",
   "thunderbird",
   "1password",
+  "com.onepassword.onepassword",
   "brave-cinhimbnkkaeohfgghhklpknlkffjgod-default",
-  "brave-cinhimbnkkaeohfgghhklpknlkffjgod-Default",
 ];
 
-const PULL_TO_CURRENT_CLASSES = ["1password"];
+const PULL_TO_CURRENT_CLASSES = ["1password", "com.onepassword.onepassword"];
+
+function findGeneralDesktop() {
+  return workspace.desktops.find((d) => d.name.toLowerCase() === "general");
+}
 
 function ensureGeneralDesktop() {
-  let general = workspace.desktops.find(
-    (d) => d.name.toLowerCase() === "general",
-  );
+  let general = findGeneralDesktop();
   if (!general) {
-    general = workspace.createDesktop("general");
+    workspace.createDesktop(workspace.desktops.length, "general");
+    general = findGeneralDesktop();
   }
   return general;
 }
@@ -42,39 +47,28 @@ workspace.windowAdded.connect(function (window) {
     return;
   }
 
-  let general = ensureGeneralDesktop();
-
-  if (general) {
-    window.desktops = [general];
-
-    if ("currentVirtualDesktop" in workspace) {
-      workspace.currentVirtualDesktop = general;
-    } else {
-      workspace.currentDesktop = general;
-    }
+  const general = ensureGeneralDesktop();
+  if (!general) {
+    print("Could not find or create the general desktop");
+    return;
   }
+
+  window.desktops = [general];
+  workspace.currentDesktop = general;
 });
 
 workspace.windowActivated.connect(function (window) {
-  print("Window activated", window.resourceClass.toLowerCase());
   if (!window) return;
 
   const cls = (window.resourceClass || "").toLowerCase();
+  print("Window activated", cls);
 
   if (PULL_TO_CURRENT_CLASSES.includes(cls)) {
     print("Activated window of class " + cls);
-    if ("currentVirtualDesktop" in workspace) {
-      const current = workspace.currentVirtualDesktop;
-      if (!window.desktops.includes(current)) {
-        window.desktops = [current];
-        print(" → moved to current virtual desktop");
-      }
-    } else {
-      const current = workspace.currentDesktop; // Plasma 5
-      if (window.desktop !== current) {
-        window.desktop = current;
-        print(" → moved to current desktop");
-      }
+    const current = workspace.currentDesktop;
+    if (!window.desktops.includes(current)) {
+      window.desktops = [current];
+      print(" → moved to current virtual desktop");
     }
   }
 });

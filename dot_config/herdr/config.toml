@@ -101,26 +101,6 @@ path = "~/Documents/projects"
 children = true
 
 [[repos]]
-path = "~/Documents/projects/everything"
-children = true
-
-[[repos]]
-path = "~/Documents/projects/fitness"
-children = true
-
-[[repos]]
-path = "~/Documents/projects/hodor"
-children = true
-
-[[repos]]
-path = "~/Documents/projects/keebs"
-children = true
-
-[[repos]]
-path = "~/Documents/projects/forks"
-children = true
-
-[[repos]]
 path = "~/.local/share/chezmoi"
 
 [[repos]]
