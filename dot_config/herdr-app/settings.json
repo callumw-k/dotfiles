@@ -11,12 +11,10 @@
   "theme": "catppuccin-macchiato",
   "repos": [
     { "path": "~/Documents/code", "children": true },
-    { "path": "~/Documents/test-code", "children": true },
-    { "path": "~/code/active", "children": true },
-    { "path": "~/.config/nvim", "children": true },
     { "path": "~/Documents/projects", "children": true },
-    { "path": "~/.local/share/chezmoi" },
     { "path": "~/Documents/notes/vault" },
+    { "path": "~/.config/nvim" },
+    { "path": "~/.local/share/chezmoi" },
     { "path": "~/.claude" }
   ]
 }
