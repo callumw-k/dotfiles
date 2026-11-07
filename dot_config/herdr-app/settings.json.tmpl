@@ -1,5 +1,9 @@
 {
+{{- if eq .chezmoi.os "darwin" }}
   "zoom": 1.0,
+{{- else }}
+  "zoom": 1.25,
+{{- end }}
   "sounds": {
     "enabled": true
   },
