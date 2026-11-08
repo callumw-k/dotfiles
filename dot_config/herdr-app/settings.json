@@ -5,6 +5,7 @@
   },
   "font": "Monaspace Neon",
   "font_size": 16.0,
+  "option_as_alt": "on",
   "font_ligatures": false,
   "ui_font": "Monaspace Neon",
   "minimum_contrast": 1.0,
